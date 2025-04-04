@@ -1,0 +1,64 @@
+{{/* 
+  This partial is used to fetch book covers with a failsafe system.
+  Usage: 
+  {{ partial "book-cover.html" (dict "title" .title "author" .author "cover" .cover) }}
+*/}}
+
+{{ $title := .title }}
+{{ $author := .author }}
+{{ $isbn := .isbn | default "" }}
+{{ $cover := .cover }}
+{{ $normalizedTitle := replace (lower $title) " " "-" }}
+
+{{/* 
+  This template implements a failsafe system for book covers with multiple providers.
+  
+  Cover sources (in order of priority):
+  1. Explicitly provided cover URL in front matter
+  2. Local cover image in /images/covers/[normalized-title].jpg
+  3. Amazon cover URL (if the provided one starts with amazon and fails)
+  4. Open Library covers API (using ISBN or title/author)
+  5. Google Books API (using title/author search)
+  6. Default fallback cover 
+*/}}
+
+{{/* Handle Amazon failover by testing if the current cover is from Amazon */}}
+{{ $isAmazon := false }}
+{{ if $cover }}
+  {{ $isAmazon = strings.HasPrefix $cover "https://m.media-amazon.com" }}
+{{ end }}
+
+{{/* Define alternative providers */}}
+{{ $localPath := printf "/images/covers/%s.jpg" $normalizedTitle }}
+{{ $openLibraryUrl := "" }}
+{{ if $isbn }}
+  {{ $openLibraryUrl = printf "https://covers.openlibrary.org/b/isbn/%s-L.jpg" $isbn }}
+{{ else }}
+  {{ $openLibraryUrl = printf "https://covers.openlibrary.org/b/title/%s-L.jpg" (urlquery $title) }}
+{{ end }}
+{{ $googleBooksUrl := printf "https://books.google.com/books/content?id=%s&printsec=frontcover&img=1&zoom=1&source=gbs_api" (urlquery (printf "%s %s" $title $author)) }}
+
+{{/* Use onError attribute to handle failover between sources */}}
+<img 
+  src="{{ with $cover }}{{ . }}{{ else }}{{ $localPath }}{{ end }}" 
+  alt="{{ $title }} by {{ $author }}" 
+  loading="lazy"
+  onerror="
+    if (!this.getAttribute('data-tried-local') && this.src !== '{{ $localPath }}') {
+      this.setAttribute('data-tried-local', 'true');
+      this.src = '{{ $localPath }}';
+    } 
+    else if (!this.getAttribute('data-tried-openlibrary')) {
+      this.setAttribute('data-tried-openlibrary', 'true');
+      this.src = '{{ $openLibraryUrl }}';
+    } 
+    else if (!this.getAttribute('data-tried-google')) {
+      this.setAttribute('data-tried-google', 'true');
+      this.src = '{{ $googleBooksUrl }}';
+    } 
+    else {
+      this.src = '/images/covers/default-cover.jpg';
+      this.onerror = null;
+    }
+  "
+>

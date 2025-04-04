@@ -1,12 +1,14 @@
 <header>
-  <div class="site-title">
-    <a href="{{ .Site.BaseURL }}">
-      {{ .Site.Title }}
-    </a>
+  <div class="header-content">
+    <div class="site-title">
+      <a href="/">
+        {{ .Site.Title }}
+      </a>
+    </div>
+    <nav>
+      {{ range .Site.Menus.main }}
+      <a href="{{ .URL }}">{{ .Name }}</a>
+      {{ end }}
+    </nav>
   </div>
-  <nav>
-    {{ range .Site.Menus.main }}
-    <a href="{{ .URL }}">{{ .Name }}</a>
-    {{ end }}
-  </nav>
 </header>

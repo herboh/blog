@@ -8,6 +8,7 @@ theme = 'dark-minimal'
 [params]
   authorName = "Chandler Fulmer"
   description = "Personal site of Chandler Fulmer"
+  aboutMe = "Hi, I'm Chandler Fulmer. I'm a software engineer and technology enthusiast. This is where I share my thoughts on programming, books I've read, and other interesting topics."
   # Social media handles
   github = "herboh"
   twitter = "yourusername"

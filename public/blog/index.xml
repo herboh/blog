@@ -15,5 +15,26 @@
       <guid>https://example.org/blog/blogpost/</guid>
       <description>&lt;p&gt;Date&lt;/p&gt;&#xA;&lt;ul&gt;&#xA;&lt;li&gt;item 1&lt;/li&gt;&#xA;&lt;li&gt;item 2&lt;/li&gt;&#xA;&lt;li&gt;item 3&lt;/li&gt;&#xA;&lt;li&gt;item 4&lt;/li&gt;&#xA;&lt;li&gt;item 5&lt;/li&gt;&#xA;&lt;li&gt;item 6&lt;/li&gt;&#xA;&lt;/ul&gt;&#xA;&lt;p&gt;chan&lt;/p&gt;</description>
     </item>
+    <item>
+      <title>Essential Coding Patterns Every Developer Should Know</title>
+      <link>https://example.org/blog/coding-patterns/</link>
+      <pubDate>Fri, 15 Mar 2024 00:00:00 +0000</pubDate>
+      <guid>https://example.org/blog/coding-patterns/</guid>
+      <description></description>
+    </item>
+    <item>
+      <title>My Journey into the Mechanical Keyboard Rabbit Hole</title>
+      <link>https://example.org/blog/mechanical-keyboards/</link>
+      <pubDate>Sat, 10 Feb 2024 00:00:00 +0000</pubDate>
+      <guid>https://example.org/blog/mechanical-keyboards/</guid>
+      <description></description>
+    </item>
+    <item>
+      <title>Setting Up the Perfect Linux Desktop Environment in 2024</title>
+      <link>https://example.org/blog/linux-desktop/</link>
+      <pubDate>Sat, 20 Jan 2024 00:00:00 +0000</pubDate>
+      <guid>https://example.org/blog/linux-desktop/</guid>
+      <description></description>
+    </item>
   </channel>
 </rss>

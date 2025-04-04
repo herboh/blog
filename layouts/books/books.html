@@ -10,7 +10,7 @@
       {{ range .list }}
       <div class="book-card">
         <div class="book-cover">
-          <img src="{{ .cover }}" alt="{{ .title }} by {{ .author }}" loading="lazy">
+          {{ partial "book-cover.html" (dict "title" .title "author" .author "cover" .cover "isbn" .isbn) }}
         </div>
         <div class="book-details">
           <h3 class="book-title">{{ .title }}</h3>
