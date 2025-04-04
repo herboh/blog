@@ -1,0 +1,13 @@
+{{ define "main" }}
+<h1>{{ .Title }}</h1>
+<ul>
+  {{ range .Pages }}
+  <li>
+    <a href="{{ .Permalink }}">{{ .Title }}</a>
+    <small style="color: var(--muted-text-color);">
+      ({{ .Date.Format "Jan 02, 2006" }})
+    </small>
+  </li>
+  {{ end }}
+</ul>
+{{ end }}

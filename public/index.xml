@@ -1,0 +1,26 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes"?>
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
+  <channel>
+    <title>chanfulmer dot com</title>
+    <link>https://example.org/</link>
+    <description>Recent content on chanfulmer dot com</description>
+    <generator>Hugo</generator>
+    <language>en-us</language>
+    <lastBuildDate>Fri, 04 Apr 2025 00:00:00 +0000</lastBuildDate>
+    <atom:link href="https://example.org/index.xml" rel="self" type="application/rss+xml" />
+    <item>
+      <title>My First Post</title>
+      <link>https://example.org/blog/blogpost/</link>
+      <pubDate>Fri, 04 Apr 2025 00:00:00 +0000</pubDate>
+      <guid>https://example.org/blog/blogpost/</guid>
+      <description>&lt;p&gt;Date&lt;/p&gt;&#xA;&lt;ul&gt;&#xA;&lt;li&gt;item 1&lt;/li&gt;&#xA;&lt;li&gt;item 2&lt;/li&gt;&#xA;&lt;li&gt;item 3&lt;/li&gt;&#xA;&lt;li&gt;item 4&lt;/li&gt;&#xA;&lt;li&gt;item 5&lt;/li&gt;&#xA;&lt;li&gt;item 6&lt;/li&gt;&#xA;&lt;/ul&gt;&#xA;&lt;p&gt;chan&lt;/p&gt;</description>
+    </item>
+    <item>
+      <title></title>
+      <link>https://example.org/cv/</link>
+      <pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>
+      <guid>https://example.org/cv/</guid>
+      <description>&lt;p&gt;#resume&#xA;chan&lt;/p&gt;</description>
+    </item>
+  </channel>
+</rss>

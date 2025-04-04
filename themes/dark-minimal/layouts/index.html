@@ -1,0 +1,24 @@
+{{ define "main" }}
+<section>
+  <h1>Welcome to {{ .Site.Params.authorName }}'s Website</h1>
+  <p>
+    This is a short introduction or tagline, similar to the personal statement on mil.ad.
+    Customize this text to introduce yourself or your site.
+  </p>
+</section>
+
+<section>
+  <h2>Recent Posts</h2>
+  <ul>
+    {{ range first 5 (where .Site.RegularPages "Section" "blog") }}
+    <li>
+      <a href="{{ .Permalink }}">{{ .Title }}</a>
+      <small style="color: var(--muted-text-color);">
+        ({{ .Date.Format "Jan 02, 2006" }})
+      </small>
+    </li>
+    {{ end }}
+  </ul>
+  <a href="/blog">All Posts →</a>
+</section>
+{{ end }}

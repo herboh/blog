@@ -1,0 +1,16 @@
+baseURL = "https://chanfulmer.com/"
+languageCode = "en-us"
+title = "Chan Fulmer"
+theme = "dark-minimal"
+
+[params]
+authorName = "Chandler Fulmer"
+[[menu.main]]
+name = "CV"
+url = "/cv"
+[[menu.main]]
+name = "Blog"
+url = "/blog"
+[[menu.main]]
+name = "Book Log"
+url = "/book-log"

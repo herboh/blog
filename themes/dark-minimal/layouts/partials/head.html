@@ -1,0 +1,29 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="utf-8" />
+  <title>{{ .Title }} - {{ .Site.Title }}</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="description" content="{{ with .Description }}{{ . }}{{ else }}{{ with .Site.Params.description }}{{ . }}{{ end }}{{ end }}">
+  
+  <!-- Preconnect to CDNs for performance -->
+  <link rel="preconnect" href="https://cdnjs.cloudflare.com">
+  
+  <!-- Main stylesheet -->
+  {{ $css := resources.Get "css/main.css" | resources.Minify }}
+  <link rel="stylesheet" href="{{ $css.RelPermalink }}">
+  
+  <!-- Main JavaScript -->
+  {{ $js := resources.Get "js/main.js" | resources.Minify }}
+  <script defer src="{{ $js.RelPermalink }}"></script>
+
+  <!-- Favicon -->
+  <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 width=%22256%22 height=%22256%22 viewBox=%220 0 100 100%22><rect width=%22100%22 height=%22100%22 rx=%2220%22 fill=%22%23282828%22></rect><path fill=%22%23fe8019%22 d=%22M30 40L50 65L70 40%22></path></svg>">
+  
+  <!-- Modern enhancements -->
+  <meta name="theme-color" content="#282828">
+  <link rel="canonical" href="{{ .Permalink }}">
+</head>
+
+<body class="dark-theme">

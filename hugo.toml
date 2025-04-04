@@ -1,0 +1,29 @@
+baseURL = 'https://example.org/'
+languageCode = 'en-us'
+title = 'chanfulmer dot com'
+theme = 'dark-minimal'
+
+# Menu is defined manually below
+
+[params]
+  authorName = "Chandler Fulmer"
+  description = "Personal site of Chandler Fulmer"
+  # Social media handles
+  github = "herboh"
+  twitter = "yourusername"
+  linkedin = "yourusername"
+
+# Navigation menu
+[menu]
+  [[menu.main]]
+    name = "Blog"
+    url = "/blog/"
+    weight = 1
+  [[menu.main]]
+    name = "CV"
+    url = "/cv/"
+    weight = 2
+  [[menu.main]]
+    name = "Books"
+    url = "/books/"
+    weight = 3
