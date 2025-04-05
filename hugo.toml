@@ -1,4 +1,4 @@
-baseURL = 'https://example.org/'
+baseURL = 'https://chanfulmer.com/'
 languageCode = 'en-us'
 title = 'chanfulmer dot com'
 theme = 'dark-minimal'
@@ -6,25 +6,25 @@ theme = 'dark-minimal'
 # Menu is defined manually below
 
 [params]
-  authorName = "Chandler Fulmer"
-  description = "Personal site of Chandler Fulmer"
-  aboutMe = "Hi, I'm Chandler Fulmer. I'm a software engineer and technology enthusiast. This is where I share my thoughts on programming, books I've read, and other interesting topics."
-  # Social media handles
-  github = "herboh"
-  twitter = "yourusername"
-  linkedin = "yourusername"
+authorName = "Chandler Fulmer"
+description = "Chan's Blog"
+aboutMe = "I'm Chandler, this is a collection of projects, writing, reading, and software. I wanted a place to publish niche tech issues I ran into, or opinions on the state of the world, just in case it was interesting to any passerby on the web."
+# Social media handles
+github = "herboh"
+twitter = "yourusername"
+linkedin = "yourusername"
 
 # Navigation menu
 [menu]
-  [[menu.main]]
-    name = "Blog"
-    url = "/blog/"
-    weight = 1
-  [[menu.main]]
-    name = "CV"
-    url = "/cv/"
-    weight = 2
-  [[menu.main]]
-    name = "Books"
-    url = "/books/"
-    weight = 3
+[[menu.main]]
+name = "Blog"
+url = "/blog/"
+weight = 1
+[[menu.main]]
+name = "CV"
+url = "/cv/"
+weight = 2
+[[menu.main]]
+name = "Books"
+url = "/books/"
+weight = 3

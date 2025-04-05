@@ -1,0 +1,7 @@
+.git
+.gitmodules
+public
+resources
+node_modules
+Dockerfile
+.dockerignore

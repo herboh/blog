@@ -2,38 +2,38 @@
 <rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
   <channel>
     <title>Blogs on chanfulmer dot com</title>
-    <link>https://example.org/blog/</link>
+    <link>http://localhost:1313/blog/</link>
     <description>Recent content in Blogs on chanfulmer dot com</description>
     <generator>Hugo</generator>
     <language>en-us</language>
     <lastBuildDate>Fri, 04 Apr 2025 00:00:00 +0000</lastBuildDate>
-    <atom:link href="https://example.org/blog/index.xml" rel="self" type="application/rss+xml" />
+    <atom:link href="http://localhost:1313/blog/index.xml" rel="self" type="application/rss+xml" />
     <item>
       <title>My First Post</title>
-      <link>https://example.org/blog/blogpost/</link>
+      <link>http://localhost:1313/blog/blogpost/</link>
       <pubDate>Fri, 04 Apr 2025 00:00:00 +0000</pubDate>
-      <guid>https://example.org/blog/blogpost/</guid>
+      <guid>http://localhost:1313/blog/blogpost/</guid>
       <description>&lt;p&gt;Date&lt;/p&gt;&#xA;&lt;ul&gt;&#xA;&lt;li&gt;item 1&lt;/li&gt;&#xA;&lt;li&gt;item 2&lt;/li&gt;&#xA;&lt;li&gt;item 3&lt;/li&gt;&#xA;&lt;li&gt;item 4&lt;/li&gt;&#xA;&lt;li&gt;item 5&lt;/li&gt;&#xA;&lt;li&gt;item 6&lt;/li&gt;&#xA;&lt;/ul&gt;&#xA;&lt;p&gt;chan&lt;/p&gt;</description>
     </item>
     <item>
       <title>Essential Coding Patterns Every Developer Should Know</title>
-      <link>https://example.org/blog/coding-patterns/</link>
+      <link>http://localhost:1313/blog/coding-patterns/</link>
       <pubDate>Fri, 15 Mar 2024 00:00:00 +0000</pubDate>
-      <guid>https://example.org/blog/coding-patterns/</guid>
+      <guid>http://localhost:1313/blog/coding-patterns/</guid>
       <description></description>
     </item>
     <item>
       <title>My Journey into the Mechanical Keyboard Rabbit Hole</title>
-      <link>https://example.org/blog/mechanical-keyboards/</link>
+      <link>http://localhost:1313/blog/mechanical-keyboards/</link>
       <pubDate>Sat, 10 Feb 2024 00:00:00 +0000</pubDate>
-      <guid>https://example.org/blog/mechanical-keyboards/</guid>
+      <guid>http://localhost:1313/blog/mechanical-keyboards/</guid>
       <description></description>
     </item>
     <item>
       <title>Setting Up the Perfect Linux Desktop Environment in 2024</title>
-      <link>https://example.org/blog/linux-desktop/</link>
+      <link>http://localhost:1313/blog/linux-desktop/</link>
       <pubDate>Sat, 20 Jan 2024 00:00:00 +0000</pubDate>
-      <guid>https://example.org/blog/linux-desktop/</guid>
+      <guid>http://localhost:1313/blog/linux-desktop/</guid>
       <description></description>
     </item>
   </channel>
