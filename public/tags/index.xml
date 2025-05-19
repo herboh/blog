@@ -2,73 +2,73 @@
 <rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
   <channel>
     <title>Tags on chanfulmer dot com</title>
-    <link>https://chanfulmer.com/tags/</link>
+    <link>http://localhost:1313/tags/</link>
     <description>Recent content in Tags on chanfulmer dot com</description>
     <generator>Hugo</generator>
     <language>en-us</language>
     <lastBuildDate>Fri, 15 Mar 2024 00:00:00 +0000</lastBuildDate>
-    <atom:link href="https://chanfulmer.com/tags/index.xml" rel="self" type="application/rss+xml" />
+    <atom:link href="http://localhost:1313/tags/index.xml" rel="self" type="application/rss+xml" />
     <item>
       <title>Patterns</title>
-      <link>https://chanfulmer.com/tags/patterns/</link>
+      <link>http://localhost:1313/tags/patterns/</link>
       <pubDate>Fri, 15 Mar 2024 00:00:00 +0000</pubDate>
-      <guid>https://chanfulmer.com/tags/patterns/</guid>
+      <guid>http://localhost:1313/tags/patterns/</guid>
       <description></description>
     </item>
     <item>
       <title>Programming</title>
-      <link>https://chanfulmer.com/tags/programming/</link>
+      <link>http://localhost:1313/tags/programming/</link>
       <pubDate>Fri, 15 Mar 2024 00:00:00 +0000</pubDate>
-      <guid>https://chanfulmer.com/tags/programming/</guid>
+      <guid>http://localhost:1313/tags/programming/</guid>
       <description></description>
     </item>
     <item>
       <title>Software-Design</title>
-      <link>https://chanfulmer.com/tags/software-design/</link>
+      <link>http://localhost:1313/tags/software-design/</link>
       <pubDate>Fri, 15 Mar 2024 00:00:00 +0000</pubDate>
-      <guid>https://chanfulmer.com/tags/software-design/</guid>
+      <guid>http://localhost:1313/tags/software-design/</guid>
       <description></description>
     </item>
     <item>
       <title>Hardware</title>
-      <link>https://chanfulmer.com/tags/hardware/</link>
+      <link>http://localhost:1313/tags/hardware/</link>
       <pubDate>Sat, 10 Feb 2024 00:00:00 +0000</pubDate>
-      <guid>https://chanfulmer.com/tags/hardware/</guid>
+      <guid>http://localhost:1313/tags/hardware/</guid>
       <description></description>
     </item>
     <item>
       <title>Keyboards</title>
-      <link>https://chanfulmer.com/tags/keyboards/</link>
+      <link>http://localhost:1313/tags/keyboards/</link>
       <pubDate>Sat, 10 Feb 2024 00:00:00 +0000</pubDate>
-      <guid>https://chanfulmer.com/tags/keyboards/</guid>
+      <guid>http://localhost:1313/tags/keyboards/</guid>
       <description></description>
     </item>
     <item>
       <title>Setup</title>
-      <link>https://chanfulmer.com/tags/setup/</link>
+      <link>http://localhost:1313/tags/setup/</link>
       <pubDate>Sat, 10 Feb 2024 00:00:00 +0000</pubDate>
-      <guid>https://chanfulmer.com/tags/setup/</guid>
+      <guid>http://localhost:1313/tags/setup/</guid>
       <description></description>
     </item>
     <item>
       <title>Desktop</title>
-      <link>https://chanfulmer.com/tags/desktop/</link>
+      <link>http://localhost:1313/tags/desktop/</link>
       <pubDate>Sat, 20 Jan 2024 00:00:00 +0000</pubDate>
-      <guid>https://chanfulmer.com/tags/desktop/</guid>
+      <guid>http://localhost:1313/tags/desktop/</guid>
       <description></description>
     </item>
     <item>
       <title>Linux</title>
-      <link>https://chanfulmer.com/tags/linux/</link>
+      <link>http://localhost:1313/tags/linux/</link>
       <pubDate>Sat, 20 Jan 2024 00:00:00 +0000</pubDate>
-      <guid>https://chanfulmer.com/tags/linux/</guid>
+      <guid>http://localhost:1313/tags/linux/</guid>
       <description></description>
     </item>
     <item>
       <title>Productivity</title>
-      <link>https://chanfulmer.com/tags/productivity/</link>
+      <link>http://localhost:1313/tags/productivity/</link>
       <pubDate>Sat, 20 Jan 2024 00:00:00 +0000</pubDate>
-      <guid>https://chanfulmer.com/tags/productivity/</guid>
+      <guid>http://localhost:1313/tags/productivity/</guid>
       <description></description>
     </item>
   </channel>
