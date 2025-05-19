@@ -2,7 +2,6 @@ from pathlib import Path
 from bs4 import BeautifulSoup
 from textwrap import shorten
 import json, logging, argparse, shutil
-import json, logging, argparse, re, sys, shutil
 
 try:
     from tqdm import tqdm  # optional nice progress bar
@@ -17,12 +16,6 @@ TARGET_IMAGES_DIR = Path("/home/chan/code/git/blog/wiki/I/")
 TEST_ARTICLE_DIR = Path("/home/chan/code/git/blog/wiki/test/")
 
 LAYOUT_FILE = Path("/home/chan/code/git/blog/wiki/layout.html")
-SOURCE_ARTICLES_DIR = Path("/home/chan/code/wiki/gwiki/wiki/A/")
-SOURCE_IMAGES_DIR = Path("/home/chan/code/wiki/gwiki/wiki/I/")
-TARGET_ARTICLE_DIR = Path("/home/chan/code/git/blog/wiki/A/")
-TARGET_IMAGES_DIR = Path("/home/chan/code/git/blog/wiki/I/")
-
-LAYOUT_FILE = Path("home/chan/code/git/blog/wiki/layout.html")
 
 BROKEN_LINK_HREF = "../not_g.html"
 BROKEN_LINK_CLASS = "not_g"  # Inline style for broken links color:#BF3C2C
@@ -34,7 +27,6 @@ logging.basicConfig(
     handlers=[
         logging.FileHandler("wiki_processing.log"),  # Log file
         logging.StreamHandler(),
-        logging.StreamHandler(sys.stdout),
     ],
 )
 
@@ -49,16 +41,11 @@ def get_g(src_dir: Path) -> list[Path]:
 
 
 def load_layout() -> str:
-    return LAYOUT_FILE.read_text(encoding="utf-8")
     try:
         return LAYOUT_FILE.read_text(encoding="utf-8")
     except FileNotFoundError:
         logging.error(f"Layout file not found: {LAYOUT_FILE}")
         sys.exit(1)
-
-
-def slug(text: str) -> str:
-    return re.sub(r"\s+", "_", text.strip())
 
 
 def rewrite_links(soup: BeautifulSoup, g_names: set[str]):
@@ -114,7 +101,6 @@ def main():
         "--list",
         type=Path,
         help="File containing article names (one per line)",
-        help="File containing basenames (one per line) to process exactly",
     )
     ap.add_argument(
         "--wrap-only",
@@ -139,8 +125,8 @@ def main():
 
         for path in tqdm(paths, unit="file"):
             soup = BeautifulSoup(
-                path.read_text(encoding="utf-8", errors="ignore"), "lxml"
-                path.read_text(encoding="utf-8", errors="ignore"), "html.parser"
+                path.read_text(encoding="utf-8", errors="ignore"),
+                "lxml",
             )
 
             # Extract original content inside main#article-wrap if present
@@ -168,9 +154,6 @@ def main():
 
     if args.list:
         all_g = get_g(TEST_ARTICLE_DIR)
-    all_g = get_g(SOURCE_ARTICLES_DIR)
-
-    if args.list:
         wanted = [
             line.strip() for line in args.list.read_text().splitlines() if line.strip()
         ]
@@ -182,6 +165,7 @@ def main():
             )
     else:
         paths = sorted(all_g.values())
+        all_g = get_g(SOURCE_ARTICLES_DIR)
 
     valid_names = {p.name for p in paths}
     index = []
@@ -194,7 +178,7 @@ def main():
             logging.warning(f"Read fail {src.name}: {e}")
             continue
 
-        soup = BeautifulSoup(html, "html.parser")
+        soup = BeautifulSoup(html, "lxml")
         title_tag = soup.find("title")
         if not (title_tag and title_tag.string):
             continue
