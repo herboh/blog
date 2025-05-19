@@ -5,13 +5,14 @@ RUN hugo
 
 #Serve the static files with Nginx
 FROM nginx:stable-alpine
-LABEL maintainer="Your Name <your.email@example.com>"
 
 #Remove default Nginx welcome page
 RUN rm -rf /usr/share/nginx/html/*
 
 # Copy static files from the local 'public' directory (created by 'hugo')
 COPY --from=builder /src/public /usr/share/nginx/html
+
+ARG WIKI_FILES_PATH=/home/chan/code/wiki/gwiki_output_big/wiki
 
 # Expose port 80 (Nginx default) within the container
 EXPOSE 80

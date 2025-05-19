@@ -2,58 +2,58 @@
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9"
   xmlns:xhtml="http://www.w3.org/1999/xhtml">
   <url>
-    <loc>http://localhost:1313/blog/</loc>
+    <loc>https://chanfulmer.com/blog/</loc>
     <lastmod>2025-04-04T00:00:00+00:00</lastmod>
   </url><url>
-    <loc>http://localhost:1313/</loc>
+    <loc>https://chanfulmer.com/</loc>
     <lastmod>2025-04-04T00:00:00+00:00</lastmod>
   </url><url>
-    <loc>http://localhost:1313/blog/blogpost/</loc>
+    <loc>https://chanfulmer.com/blog/blogpost/</loc>
     <lastmod>2025-04-04T00:00:00+00:00</lastmod>
   </url><url>
-    <loc>http://localhost:1313/blog/coding-patterns/</loc>
+    <loc>https://chanfulmer.com/blog/coding-patterns/</loc>
     <lastmod>2024-03-15T00:00:00+00:00</lastmod>
   </url><url>
-    <loc>http://localhost:1313/tags/patterns/</loc>
+    <loc>https://chanfulmer.com/tags/patterns/</loc>
     <lastmod>2024-03-15T00:00:00+00:00</lastmod>
   </url><url>
-    <loc>http://localhost:1313/tags/programming/</loc>
+    <loc>https://chanfulmer.com/tags/programming/</loc>
     <lastmod>2024-03-15T00:00:00+00:00</lastmod>
   </url><url>
-    <loc>http://localhost:1313/tags/software-design/</loc>
+    <loc>https://chanfulmer.com/tags/software-design/</loc>
     <lastmod>2024-03-15T00:00:00+00:00</lastmod>
   </url><url>
-    <loc>http://localhost:1313/tags/</loc>
+    <loc>https://chanfulmer.com/tags/</loc>
     <lastmod>2024-03-15T00:00:00+00:00</lastmod>
   </url><url>
-    <loc>http://localhost:1313/tags/hardware/</loc>
+    <loc>https://chanfulmer.com/tags/hardware/</loc>
     <lastmod>2024-02-10T00:00:00+00:00</lastmod>
   </url><url>
-    <loc>http://localhost:1313/tags/keyboards/</loc>
+    <loc>https://chanfulmer.com/tags/keyboards/</loc>
     <lastmod>2024-02-10T00:00:00+00:00</lastmod>
   </url><url>
-    <loc>http://localhost:1313/blog/mechanical-keyboards/</loc>
+    <loc>https://chanfulmer.com/blog/mechanical-keyboards/</loc>
     <lastmod>2024-02-10T00:00:00+00:00</lastmod>
   </url><url>
-    <loc>http://localhost:1313/tags/setup/</loc>
+    <loc>https://chanfulmer.com/tags/setup/</loc>
     <lastmod>2024-02-10T00:00:00+00:00</lastmod>
   </url><url>
-    <loc>http://localhost:1313/tags/desktop/</loc>
+    <loc>https://chanfulmer.com/tags/desktop/</loc>
     <lastmod>2024-01-20T00:00:00+00:00</lastmod>
   </url><url>
-    <loc>http://localhost:1313/tags/linux/</loc>
+    <loc>https://chanfulmer.com/tags/linux/</loc>
     <lastmod>2024-01-20T00:00:00+00:00</lastmod>
   </url><url>
-    <loc>http://localhost:1313/tags/productivity/</loc>
+    <loc>https://chanfulmer.com/tags/productivity/</loc>
     <lastmod>2024-01-20T00:00:00+00:00</lastmod>
   </url><url>
-    <loc>http://localhost:1313/blog/linux-desktop/</loc>
+    <loc>https://chanfulmer.com/blog/linux-desktop/</loc>
     <lastmod>2024-01-20T00:00:00+00:00</lastmod>
   </url><url>
-    <loc>http://localhost:1313/cv/</loc>
+    <loc>https://chanfulmer.com/cv/</loc>
   </url><url>
-    <loc>http://localhost:1313/books/</loc>
+    <loc>https://chanfulmer.com/books/</loc>
   </url><url>
-    <loc>http://localhost:1313/categories/</loc>
+    <loc>https://chanfulmer.com/categories/</loc>
   </url>
 </urlset>
