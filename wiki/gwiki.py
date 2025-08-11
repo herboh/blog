@@ -1,7 +1,10 @@
 from pathlib import Path
 from bs4 import BeautifulSoup
 from textwrap import shorten
-import json, logging, argparse, shutil
+import json
+import logging
+import argparse
+import shutil
 
 try:
     from tqdm import tqdm  # optional nice progress bar
@@ -55,7 +58,8 @@ def rewrite_links(soup: BeautifulSoup, g_names: set[str]):
         target = href.split("#", 1)[0]  # strip fragment
         target = target[:-5] if target.endswith(".html") else target
         if not target or target in g_names:
-            a["href"] = f"{target}.html" if not href.endswith(".html") else href
+            a["href"] = f"{target}.html" if not href.endswith(
+                ".html") else href
         else:
             a["href"] = BROKEN_LINK_HREF
             a["class"] = a.get("class", []) + [BROKEN_LINK_CLASS]
@@ -93,7 +97,8 @@ def copy_images(img_src_list: set[str]):
 
 
 def main():
-    ap = argparse.ArgumentParser(description="Process G-articles into wrapped wikis")
+    ap = argparse.ArgumentParser(
+        description="Process G-articles into wrapped wikis")
     ap.add_argument(
         "--json", default="articles.json", help="Path for generated article index JSON"
     )
@@ -161,7 +166,8 @@ def main():
         missing = [n for n in wanted if n not in all_g]
         if missing:
             logging.warning(
-                f"Missing {len(missing)} requested articles: {', '.join(missing)}"
+                f"Missing {len(missing)} requested articles: {
+                    ', '.join(missing)}"
             )
     else:
         paths = sorted(all_g.values())
@@ -190,7 +196,8 @@ def main():
 
         out_name = f"{src.name}.html"
         (TARGET_ARTICLE_DIR / out_name).write_text(
-            layout.replace("{{TITLE}}", title).replace("{{CONTENT}}", str(soup)),
+            layout.replace("{{TITLE}}", title).replace(
+                "{{CONTENT}}", str(soup)),
             encoding="utf-8",
         )
 

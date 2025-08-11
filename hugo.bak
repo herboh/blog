@@ -28,3 +28,15 @@ weight = 2
 name = "Books"
 url = "/books/"
 weight = 3
+[[menu.main]]
+name = "Giki"
+url = "/wiki/"
+weight = 4
+
+[module]
+  [[module.mounts]]
+    source = "static"
+    target = "static"
+  [[module.mounts]]
+    source = "wiki/content"
+    target = "static/wiki"

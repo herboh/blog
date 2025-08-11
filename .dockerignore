@@ -17,15 +17,6 @@ Dockerfile
 # Node modules if using npm/yarn for theme development
 node_modules/
 .dockerignore
-wiki/node_modules/
-wiki/A
-wiki/content/A
-wiki/I
-wiki/test
-wiki/package-lock.json
-wiki/public
-wiki/articles.json
-wiki/static
 
 *.log
 
