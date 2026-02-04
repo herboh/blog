@@ -11,12 +11,9 @@
 node_modules/
 .dockerignore
 wiki/node_modules/
+wiki/wiki-index.json
 wiki/A
 wiki/content/A
-wiki/I
-wiki/package-lock.json
-wiki/public
-wiki/articles.json
 wiki/static
 
 *.log
@@ -35,5 +32,5 @@ Thumbs.db
 .netlify/
 
 CLAUDE.md
-public
-wiki/wiki-index.json
+wiki/articles.json
+wiki/package-lock.json
