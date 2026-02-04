@@ -10,11 +10,6 @@
 # Node modules if using npm/yarn for theme development
 node_modules/
 .dockerignore
-wiki/node_modules/
-wiki/wiki-index.json
-wiki/A
-wiki/content/A
-wiki/static
 
 *.log
 
@@ -32,5 +27,4 @@ Thumbs.db
 .netlify/
 
 CLAUDE.md
-wiki/articles.json
-wiki/package-lock.json
+SETUP.md

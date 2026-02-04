@@ -2,7 +2,7 @@
 title: "iPad Mini as a Portable Arch Linux Desktop with Moonlight"
 date: 2026-02-04
 tags: ["linux", "arch", "ipad", "moonlight", "streaming", "workflow"]
-draft: true
+draft: false
 ---
 
 ## Why stream your desktop to an iPad?
