@@ -1,0 +1,218 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8" />
+  <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Gikipedia2</title>
+  <style>
+    /* ======== Gikipedia – a playful homage to Wikipedia ======== */
+    :root {
+      --bg: #f8f9fa;
+      --text: #202122;
+      --muted: #54595d;
+      --link: #0645ad;
+      --link-visited: #0b0080;
+      --border: #a2a9b1;
+      --header-bg: #ffffff;
+    }
+
+    html,
+    body {
+      margin: 0;
+      padding: 0;
+      font-family: system-ui, -apple-system, "Segoe UI", Roboto, "Helvetica Neue", Arial, "Noto Sans", sans-serif, "Apple Color Emoji", "Segoe UI Emoji";
+      background: var(--bg);
+      color: var(--text);
+      line-height: 1.55;
+    }
+
+    a {
+      color: var(--link);
+      text-decoration: none;
+    }
+
+    a:visited {
+      color: var(--link-visited);
+    }
+
+    a:hover {
+      text-decoration: underline;
+    }
+
+    header {
+      background: var(--header-bg);
+      border-bottom: 1px solid var(--border);
+      padding: 8px 16px;
+      display: flex;
+      align-items: center;
+      gap: 24px;
+    }
+
+    header h1 {
+      font-size: 1.8rem;
+      margin: 0;
+      font-weight: 400;
+    }
+
+    #searchForm {
+      flex: 1;
+      max-width: 500px;
+      display: flex;
+      border: 1px solid var(--border);
+      border-radius: 2px;
+      overflow: hidden;
+    }
+
+    #searchForm input[type="search"] {
+      flex: 1;
+      padding: 6px 8px;
+      border: none;
+      font-size: 0.9rem;
+    }
+
+    #searchForm button {
+      padding: 6px 10px;
+      font-size: 0.9rem;
+      background: var(--bg);
+      border: none;
+      border-left: 1px solid var(--border);
+      cursor: pointer;
+    }
+
+    main {
+      max-width: 1200px;
+      margin: 0 auto;
+      padding: 16px;
+      display: grid;
+      grid-template-columns: 2fr 1fr;
+      gap: 24px;
+    }
+
+    .box {
+      background: #fff;
+      border: 1px solid var(--border);
+      border-radius: 2px;
+      padding: 16px;
+    }
+
+    .box h2 {
+      margin-top: 0;
+      font-size: 1.2rem;
+      font-weight: 600;
+      border-bottom: 1px solid var(--border);
+      padding-bottom: 4px;
+      margin-bottom: 8px;
+    }
+
+    footer {
+      text-align: center;
+      font-size: 0.8rem;
+      color: var(--muted);
+      padding: 24px 0;
+    }
+  </style>
+  <script>
+    const BASE = "{{ $base }}";
+
+    const slugify = t => t.trim().replace(/\s+/g, '_');
+
+    function handleSearch(e) {
+      e.preventDefault();
+      const term = document.getElementById('searchInput').value;
+      if (!term) return;
+      const first = term[0].toUpperCase();
+      window.location.href = `${BASE}${first}/${slugify(term)}`;
+    }
+
+    function randomArticle() {
+      const letters = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ';
+      const examples = ['Gandalf', 'Galileo', 'Giraffe', 'Great_Barrier_Reef', 'Greece', 'GNU', 'GPU'];
+      const letter = letters[Math.random() * letters.length | 0];
+      const article = examples[Math.random() * examples.length | 0];
+      window.location.href = `${BASE}${letter}/${article}`;
+    }
+  </script>
+</head>
+
+<body>
+  <header>
+    <h1><a href="/wiki/" title="Gikipedia, the free local G pedia">Gikipedia</a></h1>
+    <form id="searchForm" onsubmit="handleSearch(event)">
+      <input id="searchInput" type="search" placeholder="Search G" aria-label="Search" />
+      <button type="submit">Search</button>
+    </form>
+    <button onclick="randomArticle()" title="I'm feeling curious">Random article</button>
+  </header>
+
+  <main>
+    <!-- LEFT COLUMN -->
+    <section class="box" id="featured">
+      <h2>From today's featured article</h2>
+      <p><strong>GNU</strong> (<em>GNU's Not Unix!</em>) is a free software, mass-collaboration project announced on
+        September&nbsp;27, 1983, by Richard Stallman… <a href="/wiki/G/GNU">(Full&nbsp;article…)</a></p>
+    </section>
+
+    <section class="box" id="didyouknow">
+      <h2>Did you know…</h2>
+      <ul>
+        <li>…that the <a href="/wiki/G/Gyro">gyro</a> was originally called the <em>gyroscope</em> because it <em>wrote
+            (scoped)</em> the direction of rotation?</li>
+        <li>…that in 1999, the <a href="/wiki/G/Grover">Grover</a> quantum algorithm proved a quadratic speed‑up for
+          unstructured search problems?</li>
+        <li>…that the <a href="/wiki/G/Go">game of Go</a> has more possible board positions than atoms in the observable
+          universe?</li>
+      </ul>
+    </section>
+
+    <section class="box" id="inthenews">
+      <h2>In the news</h2>
+      <ul>
+        <li><strong>May&nbsp;16</strong> – The open‑source community celebrates the 40th anniversary of <a
+            href="/wiki/G/GNU">GNU</a>.</li>
+        <li>The <a href="/wiki/G/Great_Barrier_Reef">Great Barrier Reef</a> experiences record coral regrowth after
+          conservation efforts.</li>
+      </ul>
+    </section>
+
+    <section class="box" id="ontheday">
+      <h2>On this day</h2>
+      <ul>
+        <li><strong>1929</strong> – The Academy of Motion Picture Arts and Sciences presented the first <a
+            href="/wiki/G/Academy_Awards">Academy Awards</a>.</li>
+        <li><strong>1960</strong> – <a href="/wiki/G/Theodore_Maiman">Theodore Maiman</a> operated the first functional
+          ruby laser.</li>
+      </ul>
+    </section>
+
+    <!-- RIGHT COLUMN -->
+    <aside>
+      <section class="box" id="sitenav">
+        <h2>Gikipedia navigation</h2>
+        <ul>
+          <li><a href="/wiki/">Main page</a></li>
+          <li><a href="#">Community portal</a></li>
+          <li><a href="#">Recent changes</a></li>
+          <li><a href="#">Help</a></li>
+        </ul>
+      </section>
+
+      <section class="box" id="sitetools">
+        <h2>Tools</h2>
+        <ul>
+          <li><a href="#" onclick="randomArticle();return false;">Random article</a></li>
+          <li><a href="#searchForm">Search</a></li>
+          <li><a href="#">Contact us</a></li>
+        </ul>
+      </section>
+    </aside>
+  </main>
+
+  <footer>
+    <p>Gikipedia is an independent, local snapshot of human knowledge. Content may be outdated. <br />Powered by plain
+      old HTML, served with ❤️ from Chan Fulmer's server.</p>
+  </footer>
+</body>
+
+</html>

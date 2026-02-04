@@ -1,0 +1,87 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>G-Wiki</title>
+    <link rel="stylesheet" href="wiki.css" />
+  </head>
+  <body>
+    <!-- Wikipedia-like header -->
+    <header class="wiki-header">
+      <div class="wiki-header-inner">
+        <div class="wiki-logo">
+          <a href="/wiki/">
+            <span class="wiki-logo-text">G-Wiki</span>
+          </a>
+        </div>
+        <div class="wiki-search">
+          <input
+            type="search"
+            id="wiki-search"
+            placeholder="Search G-Wiki..."
+          />
+          <button type="button" id="search-btn">Search</button>
+        </div>
+      </div>
+    </header>
+
+    <!-- Main content area -->
+    <div class="wiki-container">
+      <!-- Sidebar -->
+      <nav class="wiki-sidebar">
+        <div class="sidebar-section">
+          <h3>Navigation</h3>
+          <ul>
+            <li><a href="/wiki/">Main Page</a></li>
+            <li><a href="/wiki/Special:Random">Random Article</a></li>
+          </ul>
+        </div>
+        <div class="sidebar-section">
+          <h3>Tools</h3>
+          <ul>
+            <li><a href="#" id="chat-toggle">Ask G-Bot</a></li>
+            <li><a href="/">Back to Blog</a></li>
+          </ul>
+        </div>
+      </nav>
+
+      <!-- Main content -->
+      <main class="wiki-main">
+        <div class="wiki-loading" id="loading">
+          <div class="loading-spinner"></div>
+          <p>Loading article...</p>
+        </div>
+
+        <div class="wiki-error" id="error" style="display: none">
+          <h2>Article Not Found</h2>
+          <p>The requested article could not be found.</p>
+          <a href="/wiki/">Return to Main Page</a>
+        </div>
+
+        <article class="wiki-article" id="article-content">
+          <!-- Raw Wikipedia HTML will be injected here -->
+        </article>
+      </main>
+    </div>
+
+    <!-- Chat interface (hidden by default) -->
+    <div class="chat-panel" id="chat-panel">
+      <div class="chat-header">
+        <h3>G-Bot Assistant</h3>
+        <button id="chat-close">&times;</button>
+      </div>
+      <div class="chat-messages" id="chat-messages">
+        <div class="chat-message bot">
+          <p>Hi! I'm G-Bot. Ask me anything about the articles in G-Wiki!</p>
+        </div>
+      </div>
+      <div class="chat-input-container">
+        <input type="text" id="chat-input" placeholder="Ask a question..." />
+        <button id="chat-send">Send</button>
+      </div>
+    </div>
+
+    <script src="app.js"></script>
+  </body>
+</html>

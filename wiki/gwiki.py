@@ -1,224 +1,335 @@
+#!/usr/bin/env python3
+"""
+Optimized Wikipedia article processor.
+Extracts articles from wikidump, fixes links, and reports image requirements.
+"""
+
 from pathlib import Path
-from bs4 import BeautifulSoup
-from textwrap import shorten
+import re
 import json
 import logging
 import argparse
 import shutil
+from typing import Set, List, Dict, Tuple
+from dataclasses import dataclass
 
 try:
-    from tqdm import tqdm  # optional nice progress bar
+    from tqdm import tqdm
 except ImportError:
-    tqdm = lambda x, **k: x  # fallback: plain iterator
+    tqdm = lambda x, **k: x
 
-# Source directory containing the raw Wikipedia articles (files named like "Galaxy", "Galileo_Galilei")
-SOURCE_ARTICLES_DIR = Path("/home/chan/code/wiki/gwiki/A/")
+# Configuration
+SOURCE_DIR = Path("/home/chan/code/wiki/gwiki/A/")
 SOURCE_IMAGES_DIR = Path("/home/chan/code/wiki/gwiki/I/")
-TARGET_ARTICLE_DIR = Path("/home/chan/code/git/blog/wiki/A/")
+TARGET_DIR = Path("/home/chan/code/git/blog/wiki/A/")
 TARGET_IMAGES_DIR = Path("/home/chan/code/git/blog/wiki/I/")
-TEST_ARTICLE_DIR = Path("/home/chan/code/git/blog/wiki/test/")
-
-LAYOUT_FILE = Path("/home/chan/code/git/blog/wiki/layout.html")
-
-BROKEN_LINK_HREF = "../not_g.html"
-BROKEN_LINK_CLASS = "not_g"  # Inline style for broken links color:#BF3C2C
-
-# Setup logging
-logging.basicConfig(
-    level=logging.INFO,
-    format="%(asctime)s - %(levelname)s: %(message)s",
-    handlers=[
-        logging.FileHandler("wiki_processing.log"),  # Log file
-        logging.StreamHandler(),
-    ],
-)
+TITLES_FILE = Path("gtitles.txt")
+REDIRECT_THRESHOLD = 1000  # bytes
+BROKEN_LINK_REPLACEMENT = '<a href="../not_g.html" class="not_g"'
 
 
-# Check folder for filenames of articles, select only the the ones that start with G.
-# All Articles are in A/ and are in the format of A/Article_Name A/Article_name,Example(parenthesis) A/SubDirectory/Article
-def get_g(src_dir: Path) -> list[Path]:
-    """Return sorted list of Paths for files whose basename starts with G (case-sensitive)."""
-    return {
-        p.name: p for p in src_dir.iterdir() if p.is_file() and p.name.startswith("G")
-    }
+@dataclass
+class ArticleResult:
+    """Result of processing a single article."""
+
+    name: str
+    title: str
+    size_bytes: int
+    is_redirect: bool
+    images: List[str]
+    processed: bool
+    error: str = ""
 
 
-def load_layout() -> str:
-    try:
-        return LAYOUT_FILE.read_text(encoding="utf-8")
-    except FileNotFoundError:
-        logging.error(f"Layout file not found: {LAYOUT_FILE}")
-        sys.exit(1)
-
-
-def rewrite_links(soup: BeautifulSoup, g_names: set[str]):
-    """Mutate <a> tags: keep G-links, mark others broken."""
-    for a in soup.find_all("a", href=True):
-        href = a["href"]
-        target = href.split("#", 1)[0]  # strip fragment
-        target = target[:-5] if target.endswith(".html") else target
-        if not target or target in g_names:
-            a["href"] = f"{target}.html" if not href.endswith(
-                ".html") else href
-        else:
-            a["href"] = BROKEN_LINK_HREF
-            a["class"] = a.get("class", []) + [BROKEN_LINK_CLASS]
-
-
-def first_snippet(soup: BeautifulSoup, max_chars=140) -> str:
-    p = soup.find("p")
-    return shorten(p.get_text(" ", strip=True), max_chars) if p else ""
-
-
-def wrap_html(body_html: str, title: str, layout_tpl: str) -> str:
-    return layout_tpl.replace("{{TITLE}}", title).replace("{{CONTENT}}", body_html)
-
-
-def collect_images(soup: BeautifulSoup):
-    return sorted(
-        {img.get("src", "") for img in soup.find_all("img") if img.get("src")}
+def setup_logging():
+    """Configure logging."""
+    logging.basicConfig(
+        level=logging.INFO,
+        format="%(asctime)s - %(levelname)s: %(message)s",
+        handlers=[
+            logging.FileHandler("wiki_processing.log"),
+            logging.StreamHandler(),
+        ],
     )
 
 
-def copy_images(img_src_list: set[str]):
+def load_desired_articles(titles_file: Path) -> Set[str]:
+    """Load the list of articles we want to process."""
+    try:
+        content = titles_file.read_text(encoding="utf-8")
+        titles = {line.strip() for line in content.splitlines() if line.strip()}
+        logging.info(f"Loaded {len(titles)} desired article titles")
+        return titles
+    except FileNotFoundError:
+        logging.error(f"Titles file not found: {titles_file}")
+        raise
+
+
+def is_redirect_file(file_path: Path, threshold: int = REDIRECT_THRESHOLD) -> bool:
+    """Quick check if file is likely a redirect based on size."""
+    try:
+        return file_path.stat().st_size < threshold
+    except OSError:
+        return True  # Assume redirect if we can't read
+
+
+def extract_title_from_html(html: str) -> str:
+    """Extract title from HTML using regex (faster than BeautifulSoup for this)."""
+    match = re.search(r"<title[^>]*>([^<]+)</title>", html, re.IGNORECASE)
+    return match.group(1).strip() if match else ""
+
+
+def extract_images_from_html(html: str) -> List[str]:
+    """Extract image sources using regex."""
+    pattern = r'<img[^>]+src=["\']([^"\']+)["\'][^>]*>'
+    matches = re.findall(pattern, html, re.IGNORECASE)
+    # Clean and deduplicate
+    images = []
+    seen = set()
+    for src in matches:
+        # Get just the filename
+        filename = Path(src).name
+        if filename and filename not in seen:
+            images.append(filename)
+            seen.add(filename)
+    return sorted(images)
+
+
+def fix_links_fast(html: str, valid_articles: Set[str]) -> str:
+    """
+    Fix article links using string replacement (faster than BeautifulSoup).
+    Keep links to valid articles, mark others as broken.
+    """
+
+    def replace_link(match):
+        full_tag = match.group(0)
+        href_content = match.group(1)
+
+        # Extract the base article name (remove .html and fragments)
+        base_name = href_content.split("#")[0]
+        if base_name.endswith(".html"):
+            base_name = base_name[:-5]
+
+        if not base_name or base_name in valid_articles:
+            # Valid link - ensure it has .html extension
+            if not href_content.endswith(".html") and "#" not in href_content:
+                return full_tag.replace(
+                    f'href="{href_content}"', f'href="{href_content}.html"'
+                )
+            return full_tag
+        else:
+            # Broken link - replace with broken link markup
+            return BROKEN_LINK_REPLACEMENT + full_tag[full_tag.find(" ") :]
+
+    # Pattern to match <a href="..."> tags
+    pattern = r'<a\s+href=["\']([^"\']*)["\'][^>]*>'
+    return re.sub(pattern, replace_link, html, flags=re.IGNORECASE)
+
+
+def process_article(file_path: Path, valid_articles: Set[str]) -> ArticleResult:
+    """Process a single article file."""
+    name = file_path.name
+
+    # Quick redirect check
+    if is_redirect_file(file_path):
+        return ArticleResult(
+            name=name,
+            title="",
+            size_bytes=file_path.stat().st_size,
+            is_redirect=True,
+            images=[],
+            processed=False,
+        )
+
+    try:
+        html = file_path.read_text(encoding="utf-8", errors="ignore")
+        size_bytes = len(html.encode("utf-8"))
+
+        # Double-check redirect status by content if size is close to threshold
+        if size_bytes < REDIRECT_THRESHOLD * 1.2:  # 20% buffer
+            # Simple heuristic: redirects typically have very little content
+            text_content = re.sub(r"<[^>]+>", "", html).strip()
+            if len(text_content) < 200:  # Very little actual text content
+                return ArticleResult(
+                    name=name,
+                    title=extract_title_from_html(html),
+                    size_bytes=size_bytes,
+                    is_redirect=True,
+                    images=[],
+                    processed=False,
+                )
+
+        title = extract_title_from_html(html)
+        if not title:
+            return ArticleResult(
+                name=name,
+                title="",
+                size_bytes=size_bytes,
+                is_redirect=False,
+                images=[],
+                processed=False,
+                error="No title found",
+            )
+
+        # Fix links and extract images
+        fixed_html = fix_links_fast(html, valid_articles)
+        images = extract_images_from_html(html)
+
+        # Write processed file
+        TARGET_DIR.mkdir(parents=True, exist_ok=True)
+        output_path = TARGET_DIR / f"{name}.html"
+        output_path.write_text(fixed_html, encoding="utf-8")
+
+        return ArticleResult(
+            name=name,
+            title=title,
+            size_bytes=size_bytes,
+            is_redirect=False,
+            images=images,
+            processed=True,
+        )
+
+    except Exception as e:
+        return ArticleResult(
+            name=name,
+            title="",
+            size_bytes=0,
+            is_redirect=False,
+            images=[],
+            processed=False,
+            error=str(e),
+        )
+
+
+def copy_images(all_images: Set[str]) -> int:
+    """Copy required images from source to target."""
     TARGET_IMAGES_DIR.mkdir(parents=True, exist_ok=True)
     copied = 0
-    for src in img_src_list:
-        name = Path(src).name
-        src_path = SOURCE_IMAGES_DIR / name
-        dest_path = TARGET_IMAGES_DIR / name
-        if src_path.exists() and not dest_path.exists():
+
+    for img_name in tqdm(all_images, desc="Copying images", unit="img"):
+        src_path = SOURCE_IMAGES_DIR / img_name
+        dst_path = TARGET_IMAGES_DIR / img_name
+
+        if src_path.exists() and not dst_path.exists():
             try:
-                shutil.copy2(src_path, dest_path)
+                shutil.copy2(src_path, dst_path)
                 copied += 1
             except Exception as e:
-                logging.warning(f"Copy failed for {name}: {e}")
-    logging.info(f"Copied {copied} images to {TARGET_IMAGES_DIR}")
+                logging.warning(f"Failed to copy {img_name}: {e}")
+
+    return copied
 
 
 def main():
-    ap = argparse.ArgumentParser(
-        description="Process G-articles into wrapped wikis")
-    ap.add_argument(
-        "--json", default="articles.json", help="Path for generated article index JSON"
+    parser = argparse.ArgumentParser(
+        description="Process Wikipedia articles efficiently"
     )
-    ap.add_argument(
-        "--list",
+    parser.add_argument(
+        "--titles",
         type=Path,
-        help="File containing article names (one per line)",
+        default=TITLES_FILE,
+        help="File containing desired article titles",
     )
-    ap.add_argument(
-        "--wrap-only",
+    parser.add_argument(
+        "--copy-images",
         action="store_true",
-        help="Re‑wrap existing files in TARGET_ARTICLE_DIR only",
+        help="Copy required images to target directory",
     )
-    ap.add_argument(
-        "--images",
-        action="store_true",
-        help="Copy required images from source to target",
+    parser.add_argument(
+        "--output-json",
+        type=Path,
+        default="processing_results.json",
+        help="Output file for processing results",
     )
-    args = ap.parse_args()
 
-    TARGET_ARTICLE_DIR.mkdir(parents=True, exist_ok=True)
-    layout = load_layout()
+    args = parser.parse_args()
+    setup_logging()
 
-    # ── WRAP‑ONLY MODE ───────────────────────────────────────────────
-    if args.wrap_only:
-        paths = sorted(TARGET_ARTICLE_DIR.glob("*.html"))
-        logging.info(f"Re‑wrapping {len(paths)} existing articles…")
-        images_needed = set()
+    # Load desired articles
+    desired_articles = load_desired_articles(args.titles)
 
-        for path in tqdm(paths, unit="file"):
-            soup = BeautifulSoup(
-                path.read_text(encoding="utf-8", errors="ignore"),
-                "lxml",
-            )
+    # Find existing files that match our desired articles
+    existing_files = {
+        p.name: p
+        for p in SOURCE_DIR.iterdir()
+        if p.is_file() and p.name in desired_articles
+    }
 
-            # Extract original content inside main#article-wrap if present
-            content_tag = soup.find(id="article-wrap") or soup.body or soup
-            article_html = "".join(str(c) for c in content_tag.contents)
-            title_tag = soup.find("title")
-            title = (
-                title_tag.string.strip()
-                if title_tag and title_tag.string
-                else path.stem
-            )
+    found_count = len(existing_files)
+    missing_count = len(desired_articles) - found_count
 
-            out_html = wrap_html(article_html, title, layout)
-            path.write_text(out_html, encoding="utf-8")
+    logging.info(
+        f"Found {found_count} articles, {missing_count} missing from desired list"
+    )
 
-            if args.images:
-                images_needed.update(collect_images(content_tag))
+    if missing_count > 0:
+        missing = desired_articles - set(existing_files.keys())
+        logging.warning(
+            f"Missing articles: {sorted(list(missing))[:10]}..."
+        )  # Show first 10
 
-        if args.images:
-            copy_images(images_needed)
-        logging.info("✓ Wrap‑only complete")
-        return
+    # Process articles
+    results = []
+    all_images = set()
+    processed_count = 0
+    redirect_count = 0
+    error_count = 0
 
-    # all_g = get_g(SOURCE_ARTICLES_DIR)
+    logging.info(f"Processing {found_count} articles...")
 
-    if args.list:
-        all_g = get_g(TEST_ARTICLE_DIR)
-        wanted = [
-            line.strip() for line in args.list.read_text().splitlines() if line.strip()
-        ]
-        paths = [all_g[name] for name in wanted if name in all_g]
-        missing = [n for n in wanted if n not in all_g]
-        if missing:
-            logging.warning(
-                f"Missing {len(missing)} requested articles: {
-                    ', '.join(missing)}"
-            )
-    else:
-        paths = sorted(all_g.values())
-        all_g = get_g(SOURCE_ARTICLES_DIR)
+    for file_path in tqdm(existing_files.values(), desc="Processing", unit="article"):
+        result = process_article(file_path, desired_articles)
+        results.append(result)
 
-    valid_names = {p.name for p in paths}
-    index = []
+        if result.is_redirect:
+            redirect_count += 1
+        elif result.processed:
+            processed_count += 1
+            all_images.update(result.images)
+        else:
+            error_count += 1
 
-    logging.info(f"Processing {len(paths)} articles…")
-    for src in tqdm(paths, unit="file"):
-        try:
-            html = src.read_text(encoding="utf-8", errors="ignore")
-        except Exception as e:
-            logging.warning(f"Read fail {src.name}: {e}")
-            continue
+    # Copy images if requested
+    if args.copy_images and all_images:
+        copied = copy_images(all_images)
+        logging.info(f"Copied {copied}/{len(all_images)} images")
 
-        soup = BeautifulSoup(html, "lxml")
-        title_tag = soup.find("title")
-        if not (title_tag and title_tag.string):
-            continue
-        title = title_tag.string.strip()
-
-        rewrite_links(soup, valid_names)
-        snippet = first_snippet(soup)
-        images = collect_images(soup)
-
-        out_name = f"{src.name}.html"
-        (TARGET_ARTICLE_DIR / out_name).write_text(
-            layout.replace("{{TITLE}}", title).replace(
-                "{{CONTENT}}", str(soup)),
-            encoding="utf-8",
-        )
-
-        index.append(
+    # Generate output summary
+    summary = {
+        "total_desired": len(desired_articles),
+        "found_files": found_count,
+        "processed": processed_count,
+        "redirects": redirect_count,
+        "errors": error_count,
+        "total_images": len(all_images),
+        "articles": [
             {
-                "title": title,
-                "path": f"/wiki/A/{out_name}",
-                "snippet": snippet,
-                "images": images,
+                "name": r.name,
+                "title": r.title,
+                "size_bytes": r.size_bytes,
+                "is_redirect": r.is_redirect,
+                "processed": r.processed,
+                "images": r.images,
+                "image_count": len(r.images),
+                "error": r.error,
             }
-        )
+            for r in results
+        ],
+    }
 
-    json_path = TARGET_ARTICLE_DIR.parent / args.json
-    json_path.write_text(
-        json.dumps(index, indent=2, ensure_ascii=False), encoding="utf-8"
+    # Save results
+    args.output_json.write_text(
+        json.dumps(summary, indent=2, ensure_ascii=False), encoding="utf-8"
     )
-    logging.info(f"Wrote {len(index)} records → {json_path}\n✓ Done")
 
-    if args.images:
-        copy_images(images_needed)
-    logging.info("✓ Full processing complete")
+    logging.info(f"""
+Processing complete:
+  • {processed_count} articles processed successfully
+  • {redirect_count} redirects skipped  
+  • {error_count} errors encountered
+  • {len(all_images)} unique images referenced
+  • Results saved to {args.output_json}
+""")
 
 
 if __name__ == "__main__":
