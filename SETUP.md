@@ -69,3 +69,11 @@ checked local references, and 14 XML files. Hugo's warning-as-error build,
 JavaScript/Python syntax, and desktop/mobile browser checks pass. The bookshelf
 contains 22 entries with local covers. The CV remains a placeholder pending the
 next design revision.
+
+## Interests dashboard
+
+The static `/interests/` page reads `data/interests.json`. Collection is separate
+from Hugo and keeps normalized history in a private SQLite database. See
+[INTERESTS.md](INTERESTS.md) for credentials, initial backfill, source coverage,
+failure behavior, and the optional cron command. `scripts/refresh_interests.py`
+prepares a checked local release from a Git export; it does not deploy it.

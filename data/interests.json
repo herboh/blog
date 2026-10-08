@@ -1,0 +1,745 @@
+{
+  "version": 1,
+  "sections": [
+    {
+      "key": "music",
+      "title": "Listening",
+      "source": "Last.fm",
+      "status": "pending",
+      "as_of": "",
+      "periods": [
+        {
+          "id": "recent",
+          "label": "Last 30 days",
+          "heading": "Most played tracks",
+          "metrics": [
+            {
+              "value": "0",
+              "label": "plays"
+            },
+            {
+              "value": "0",
+              "label": "tracks"
+            },
+            {
+              "value": "0",
+              "label": "artists"
+            }
+          ],
+          "items": [],
+          "series": [],
+          "series_label": "Plays by month · latest 12 recorded months",
+          "note": "Scrobbles count plays, not listening minutes. Rolling periods end at the last successful sync.",
+          "secondary": []
+        },
+        {
+          "id": "all",
+          "label": "All recorded",
+          "heading": "Most played tracks",
+          "metrics": [
+            {
+              "value": "0",
+              "label": "plays"
+            },
+            {
+              "value": "0",
+              "label": "tracks"
+            },
+            {
+              "value": "0",
+              "label": "artists"
+            }
+          ],
+          "items": [],
+          "series": [],
+          "series_label": "Plays by month · latest 12 recorded months",
+          "note": "Scrobbles count plays, not listening minutes. Rolling periods end at the last successful sync.",
+          "secondary": []
+        }
+      ],
+      "favorites": [],
+      "coverage": "No listening history collected yet.",
+      "rated": []
+    },
+    {
+      "key": "games",
+      "title": "Playing",
+      "source": "Steam",
+      "status": "pending",
+      "as_of": "",
+      "periods": [
+        {
+          "id": "recent",
+          "label": "Last 2 weeks",
+          "heading": "Most played games",
+          "items": [],
+          "metrics": [
+            {
+              "value": "0.0",
+              "label": "hours"
+            },
+            {
+              "value": "0",
+              "label": "games played"
+            }
+          ],
+          "series": [],
+          "series_label": "Observed hours by month",
+          "note": "Steam's rolling two-week totals at the last successful sync."
+        },
+        {
+          "id": "all",
+          "label": "All time",
+          "heading": "Most played games",
+          "items": [],
+          "metrics": [
+            {
+              "value": "0.0",
+              "label": "hours"
+            },
+            {
+              "value": "0",
+              "label": "games played"
+            }
+          ],
+          "series": [],
+          "series_label": "Observed hours by month",
+          "note": "Lifetime playtime returned by Steam."
+        }
+      ],
+      "favorites": [],
+      "coverage": "No playtime snapshot collected yet."
+    },
+    {
+      "key": "books",
+      "title": "Reading",
+      "source": "Reading log · Open Library",
+      "status": "local",
+      "as_of": "",
+      "coverage": "From my bookshelf, grouped by reading year. Exact finish dates are not recorded.",
+      "periods": [
+        {
+          "id": "recent",
+          "label": "Latest reads",
+          "heading": "On the bookshelf",
+          "items": [
+            {
+              "title": "The Fellowship of the Ring",
+              "creator": "J.R.R. Tolkien",
+              "image": "/images/books/the-fellowship-of-the-ring-j-r-r-tolkien.jpg",
+              "url": "/books/",
+              "metric": "2026",
+              "value": 0,
+              "date": ""
+            },
+            {
+              "title": "The Two Towers",
+              "creator": "J.R.R. Tolkien",
+              "image": "/images/books/the-two-towers-j-r-r-tolkien.jpg",
+              "url": "/books/",
+              "metric": "2026",
+              "value": 0,
+              "date": ""
+            },
+            {
+              "title": "The Return of the King",
+              "creator": "J.R.R. Tolkien",
+              "image": "/images/books/the-return-of-the-king-j-r-r-tolkien.jpg",
+              "url": "/books/",
+              "metric": "2026",
+              "value": 0,
+              "date": ""
+            },
+            {
+              "title": "The C Programming Language",
+              "creator": "Brian W. Kernighan & Dennis M. Ritchie",
+              "image": "/images/books/the-c-programming-language-brian-w-kernighan-dennis-m-ritchie.jpg",
+              "url": "/books/",
+              "metric": "2026",
+              "value": 0,
+              "date": ""
+            },
+            {
+              "title": "Project Hail Mary",
+              "creator": "Andy Weir",
+              "image": "/images/books/project-hail-mary-andy-weir.jpg",
+              "url": "/books/",
+              "metric": "2025",
+              "value": 0,
+              "date": ""
+            },
+            {
+              "title": "Blood Meridian",
+              "creator": "Cormac McCarthy",
+              "image": "/images/books/blood-meridian-cormac-mccarthy.jpg",
+              "url": "/books/",
+              "metric": "2025",
+              "value": 0,
+              "date": ""
+            }
+          ],
+          "metrics": [
+            {
+              "value": "6",
+              "label": "books"
+            },
+            {
+              "value": "4",
+              "label": "authors"
+            }
+          ],
+          "series": [],
+          "series_label": "",
+          "note": "Ordered as recorded on my bookshelf."
+        },
+        {
+          "id": "all",
+          "label": "All books",
+          "heading": "On the bookshelf",
+          "items": [
+            {
+              "title": "The Fellowship of the Ring",
+              "creator": "J.R.R. Tolkien",
+              "image": "/images/books/the-fellowship-of-the-ring-j-r-r-tolkien.jpg",
+              "url": "/books/",
+              "metric": "2026",
+              "value": 0,
+              "date": ""
+            },
+            {
+              "title": "The Two Towers",
+              "creator": "J.R.R. Tolkien",
+              "image": "/images/books/the-two-towers-j-r-r-tolkien.jpg",
+              "url": "/books/",
+              "metric": "2026",
+              "value": 0,
+              "date": ""
+            },
+            {
+              "title": "The Return of the King",
+              "creator": "J.R.R. Tolkien",
+              "image": "/images/books/the-return-of-the-king-j-r-r-tolkien.jpg",
+              "url": "/books/",
+              "metric": "2026",
+              "value": 0,
+              "date": ""
+            },
+            {
+              "title": "The C Programming Language",
+              "creator": "Brian W. Kernighan & Dennis M. Ritchie",
+              "image": "/images/books/the-c-programming-language-brian-w-kernighan-dennis-m-ritchie.jpg",
+              "url": "/books/",
+              "metric": "2026",
+              "value": 0,
+              "date": ""
+            },
+            {
+              "title": "Project Hail Mary",
+              "creator": "Andy Weir",
+              "image": "/images/books/project-hail-mary-andy-weir.jpg",
+              "url": "/books/",
+              "metric": "2025",
+              "value": 0,
+              "date": ""
+            },
+            {
+              "title": "Blood Meridian",
+              "creator": "Cormac McCarthy",
+              "image": "/images/books/blood-meridian-cormac-mccarthy.jpg",
+              "url": "/books/",
+              "metric": "2025",
+              "value": 0,
+              "date": ""
+            },
+            {
+              "title": "Moby Dick",
+              "creator": "Herman Melville",
+              "image": "/images/books/isbn-9780142437247.jpg",
+              "url": "/books/",
+              "metric": "2025",
+              "value": 0,
+              "date": ""
+            },
+            {
+              "title": "Abundance",
+              "creator": "Peter H. Diamandis & Steven Kotler",
+              "image": "/images/books/abundance-peter-h-diamandis-steven-kotler.jpg",
+              "url": "/books/",
+              "metric": "2025",
+              "value": 0,
+              "date": ""
+            },
+            {
+              "title": "There Is No Antimemetics Division",
+              "creator": "qntm",
+              "image": "/images/books/there-is-no-antimemetics-division-qntm.jpg",
+              "url": "/books/",
+              "metric": "2025",
+              "value": 0,
+              "date": ""
+            },
+            {
+              "title": "The Brothers Karamazov",
+              "creator": "Fyodor Dostoevsky",
+              "image": "/images/books/the-brothers-karamazov-fyodor-dostoevsky.jpg",
+              "url": "/books/",
+              "metric": "2024",
+              "value": 0,
+              "date": ""
+            },
+            {
+              "title": "Foundation",
+              "creator": "Isaac Asimov",
+              "image": "/images/books/foundation-isaac-asimov.jpg",
+              "url": "/books/",
+              "metric": "2024",
+              "value": 0,
+              "date": ""
+            },
+            {
+              "title": "Death's End",
+              "creator": "Cixin Liu",
+              "image": "/images/books/death-s-end-cixin-liu.jpg",
+              "url": "/books/",
+              "metric": "2024",
+              "value": 0,
+              "date": ""
+            },
+            {
+              "title": "1984",
+              "creator": "George Orwell",
+              "image": "/images/books/1984-george-orwell.jpg",
+              "url": "/books/",
+              "metric": "2024",
+              "value": 0,
+              "date": ""
+            },
+            {
+              "title": "Dune",
+              "creator": "Frank Herbert",
+              "image": "/images/books/dune-frank-herbert.jpg",
+              "url": "/books/",
+              "metric": "2023",
+              "value": 0,
+              "date": ""
+            },
+            {
+              "title": "Dune Messiah",
+              "creator": "Frank Herbert",
+              "image": "/images/books/dune-messiah-frank-herbert.jpg",
+              "url": "/books/",
+              "metric": "2023",
+              "value": 0,
+              "date": ""
+            },
+            {
+              "title": "Children of Dune",
+              "creator": "Frank Herbert",
+              "image": "/images/books/children-of-dune-frank-herbert.jpg",
+              "url": "/books/",
+              "metric": "2023",
+              "value": 0,
+              "date": ""
+            },
+            {
+              "title": "The Three-Body Problem",
+              "creator": "Cixin Liu",
+              "image": "/images/books/the-three-body-problem-cixin-liu.jpg",
+              "url": "/books/",
+              "metric": "2023",
+              "value": 0,
+              "date": ""
+            },
+            {
+              "title": "The Dark Forest",
+              "creator": "Cixin Liu",
+              "image": "/images/books/the-dark-forest-cixin-liu.jpg",
+              "url": "/books/",
+              "metric": "2023",
+              "value": 0,
+              "date": ""
+            },
+            {
+              "title": "The Martian",
+              "creator": "Andy Weir",
+              "image": "/images/books/the-martian-andy-weir.jpg",
+              "url": "/books/",
+              "metric": "2023",
+              "value": 0,
+              "date": ""
+            },
+            {
+              "title": "Fahrenheit 451",
+              "creator": "Ray Bradbury",
+              "image": "/images/books/fahrenheit-451-ray-bradbury.jpg",
+              "url": "/books/",
+              "metric": "2023",
+              "value": 0,
+              "date": ""
+            },
+            {
+              "title": "The Stranger",
+              "creator": "Albert Camus",
+              "image": "/images/books/the-stranger-albert-camus.jpg",
+              "url": "/books/",
+              "metric": "2023",
+              "value": 0,
+              "date": ""
+            },
+            {
+              "title": "Crime and Punishment",
+              "creator": "Fyodor Dostoevsky",
+              "image": "/images/books/crime-and-punishment-fyodor-dostoevsky.jpg",
+              "url": "/books/",
+              "metric": "2023",
+              "value": 0,
+              "date": ""
+            }
+          ],
+          "metrics": [
+            {
+              "value": "22",
+              "label": "books"
+            },
+            {
+              "value": "14",
+              "label": "authors"
+            }
+          ],
+          "series": [],
+          "series_label": "",
+          "note": "Ordered as recorded on my bookshelf."
+        },
+        {
+          "id": "2026",
+          "label": "2026",
+          "heading": "On the bookshelf",
+          "items": [
+            {
+              "title": "The Fellowship of the Ring",
+              "creator": "J.R.R. Tolkien",
+              "image": "/images/books/the-fellowship-of-the-ring-j-r-r-tolkien.jpg",
+              "url": "/books/",
+              "metric": "2026",
+              "value": 0,
+              "date": ""
+            },
+            {
+              "title": "The Two Towers",
+              "creator": "J.R.R. Tolkien",
+              "image": "/images/books/the-two-towers-j-r-r-tolkien.jpg",
+              "url": "/books/",
+              "metric": "2026",
+              "value": 0,
+              "date": ""
+            },
+            {
+              "title": "The Return of the King",
+              "creator": "J.R.R. Tolkien",
+              "image": "/images/books/the-return-of-the-king-j-r-r-tolkien.jpg",
+              "url": "/books/",
+              "metric": "2026",
+              "value": 0,
+              "date": ""
+            },
+            {
+              "title": "The C Programming Language",
+              "creator": "Brian W. Kernighan & Dennis M. Ritchie",
+              "image": "/images/books/the-c-programming-language-brian-w-kernighan-dennis-m-ritchie.jpg",
+              "url": "/books/",
+              "metric": "2026",
+              "value": 0,
+              "date": ""
+            }
+          ],
+          "metrics": [
+            {
+              "value": "4",
+              "label": "books"
+            },
+            {
+              "value": "2",
+              "label": "authors"
+            }
+          ],
+          "series": [],
+          "series_label": "",
+          "note": "Ordered as recorded on my bookshelf."
+        },
+        {
+          "id": "2025",
+          "label": "2025",
+          "heading": "On the bookshelf",
+          "items": [
+            {
+              "title": "Project Hail Mary",
+              "creator": "Andy Weir",
+              "image": "/images/books/project-hail-mary-andy-weir.jpg",
+              "url": "/books/",
+              "metric": "2025",
+              "value": 0,
+              "date": ""
+            },
+            {
+              "title": "Blood Meridian",
+              "creator": "Cormac McCarthy",
+              "image": "/images/books/blood-meridian-cormac-mccarthy.jpg",
+              "url": "/books/",
+              "metric": "2025",
+              "value": 0,
+              "date": ""
+            },
+            {
+              "title": "Moby Dick",
+              "creator": "Herman Melville",
+              "image": "/images/books/isbn-9780142437247.jpg",
+              "url": "/books/",
+              "metric": "2025",
+              "value": 0,
+              "date": ""
+            },
+            {
+              "title": "Abundance",
+              "creator": "Peter H. Diamandis & Steven Kotler",
+              "image": "/images/books/abundance-peter-h-diamandis-steven-kotler.jpg",
+              "url": "/books/",
+              "metric": "2025",
+              "value": 0,
+              "date": ""
+            },
+            {
+              "title": "There Is No Antimemetics Division",
+              "creator": "qntm",
+              "image": "/images/books/there-is-no-antimemetics-division-qntm.jpg",
+              "url": "/books/",
+              "metric": "2025",
+              "value": 0,
+              "date": ""
+            }
+          ],
+          "metrics": [
+            {
+              "value": "5",
+              "label": "books"
+            },
+            {
+              "value": "5",
+              "label": "authors"
+            }
+          ],
+          "series": [],
+          "series_label": "",
+          "note": "Ordered as recorded on my bookshelf."
+        },
+        {
+          "id": "2024",
+          "label": "2024",
+          "heading": "On the bookshelf",
+          "items": [
+            {
+              "title": "The Brothers Karamazov",
+              "creator": "Fyodor Dostoevsky",
+              "image": "/images/books/the-brothers-karamazov-fyodor-dostoevsky.jpg",
+              "url": "/books/",
+              "metric": "2024",
+              "value": 0,
+              "date": ""
+            },
+            {
+              "title": "Foundation",
+              "creator": "Isaac Asimov",
+              "image": "/images/books/foundation-isaac-asimov.jpg",
+              "url": "/books/",
+              "metric": "2024",
+              "value": 0,
+              "date": ""
+            },
+            {
+              "title": "Death's End",
+              "creator": "Cixin Liu",
+              "image": "/images/books/death-s-end-cixin-liu.jpg",
+              "url": "/books/",
+              "metric": "2024",
+              "value": 0,
+              "date": ""
+            },
+            {
+              "title": "1984",
+              "creator": "George Orwell",
+              "image": "/images/books/1984-george-orwell.jpg",
+              "url": "/books/",
+              "metric": "2024",
+              "value": 0,
+              "date": ""
+            }
+          ],
+          "metrics": [
+            {
+              "value": "4",
+              "label": "books"
+            },
+            {
+              "value": "4",
+              "label": "authors"
+            }
+          ],
+          "series": [],
+          "series_label": "",
+          "note": "Ordered as recorded on my bookshelf."
+        },
+        {
+          "id": "2023",
+          "label": "2023",
+          "heading": "On the bookshelf",
+          "items": [
+            {
+              "title": "Dune",
+              "creator": "Frank Herbert",
+              "image": "/images/books/dune-frank-herbert.jpg",
+              "url": "/books/",
+              "metric": "2023",
+              "value": 0,
+              "date": ""
+            },
+            {
+              "title": "Dune Messiah",
+              "creator": "Frank Herbert",
+              "image": "/images/books/dune-messiah-frank-herbert.jpg",
+              "url": "/books/",
+              "metric": "2023",
+              "value": 0,
+              "date": ""
+            },
+            {
+              "title": "Children of Dune",
+              "creator": "Frank Herbert",
+              "image": "/images/books/children-of-dune-frank-herbert.jpg",
+              "url": "/books/",
+              "metric": "2023",
+              "value": 0,
+              "date": ""
+            },
+            {
+              "title": "The Three-Body Problem",
+              "creator": "Cixin Liu",
+              "image": "/images/books/the-three-body-problem-cixin-liu.jpg",
+              "url": "/books/",
+              "metric": "2023",
+              "value": 0,
+              "date": ""
+            },
+            {
+              "title": "The Dark Forest",
+              "creator": "Cixin Liu",
+              "image": "/images/books/the-dark-forest-cixin-liu.jpg",
+              "url": "/books/",
+              "metric": "2023",
+              "value": 0,
+              "date": ""
+            },
+            {
+              "title": "The Martian",
+              "creator": "Andy Weir",
+              "image": "/images/books/the-martian-andy-weir.jpg",
+              "url": "/books/",
+              "metric": "2023",
+              "value": 0,
+              "date": ""
+            },
+            {
+              "title": "Fahrenheit 451",
+              "creator": "Ray Bradbury",
+              "image": "/images/books/fahrenheit-451-ray-bradbury.jpg",
+              "url": "/books/",
+              "metric": "2023",
+              "value": 0,
+              "date": ""
+            },
+            {
+              "title": "The Stranger",
+              "creator": "Albert Camus",
+              "image": "/images/books/the-stranger-albert-camus.jpg",
+              "url": "/books/",
+              "metric": "2023",
+              "value": 0,
+              "date": ""
+            },
+            {
+              "title": "Crime and Punishment",
+              "creator": "Fyodor Dostoevsky",
+              "image": "/images/books/crime-and-punishment-fyodor-dostoevsky.jpg",
+              "url": "/books/",
+              "metric": "2023",
+              "value": 0,
+              "date": ""
+            }
+          ],
+          "metrics": [
+            {
+              "value": "9",
+              "label": "books"
+            },
+            {
+              "value": "6",
+              "label": "authors"
+            }
+          ],
+          "series": [],
+          "series_label": "",
+          "note": "Ordered as recorded on my bookshelf."
+        }
+      ],
+      "favorites": []
+    },
+    {
+      "key": "movies",
+      "title": "Watching",
+      "source": "Letterboxd",
+      "status": "pending",
+      "as_of": "",
+      "periods": [
+        {
+          "id": "recent",
+          "label": "Last 30 days",
+          "heading": "Recently watched",
+          "metrics": [
+            {
+              "value": "0",
+              "label": "watches"
+            },
+            {
+              "value": "0",
+              "label": "films"
+            }
+          ],
+          "items": [],
+          "series": [],
+          "series_label": "Watches by month · latest 12 recorded months",
+          "note": "Viewing frequency is separate from a favorite or a rating. Rolling periods end at the last successful sync."
+        },
+        {
+          "id": "all",
+          "label": "All recorded",
+          "heading": "Most watched films",
+          "metrics": [
+            {
+              "value": "0",
+              "label": "watches"
+            },
+            {
+              "value": "0",
+              "label": "films"
+            }
+          ],
+          "items": [],
+          "series": [],
+          "series_label": "Watches by month · latest 12 recorded months",
+          "note": "Viewing frequency is separate from a favorite or a rating. Rolling periods end at the last successful sync."
+        }
+      ],
+      "favorites": [],
+      "coverage": "No viewing history collected yet.",
+      "rated": []
+    }
+  ]
+}

@@ -34,3 +34,11 @@ Thumbs.db
 .netlify/
 
 CLAUDE.md
+
+# Local browser verification and private interests credentials/state
+.playwright-cli/
+output/playwright/
+*.env
+!scripts/interests.example.env
+*.sqlite3
+*.sqlite3-*
