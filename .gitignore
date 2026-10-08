@@ -9,7 +9,14 @@
 
 # Node modules if using npm/yarn for theme development
 node_modules/
-.dockerignore
+
+# Local tooling and audit snapshots
+/.claude/
+/.local/
+# Unpublished audio draft is kept privately, not in this public repo.
+/content/blog/diy-sonos.md
+__pycache__/
+*.py[cod]
 
 *.log
 
@@ -27,4 +34,3 @@ Thumbs.db
 .netlify/
 
 CLAUDE.md
-SETUP.md

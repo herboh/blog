@@ -1,0 +1,22 @@
+<article class="post-card">
+  <div class="post-card__meta">
+    <time datetime="{{ .Date.Format "2006-01-02" }}">{{ .Date.Format "Jan 2, 2006" }}</time>
+    <span>{{ .ReadingTime }} min read</span>
+  </div>
+
+  <h2 class="post-card__title">
+    <a href="{{ .RelPermalink }}">{{ .Title }}</a>
+  </h2>
+
+  {{ with .Summary }}
+  <p class="post-card__summary">{{ . | plainify | truncate 180 }}</p>
+  {{ end }}
+
+  {{ with .Params.tags }}
+  <div class="post-card__tags">
+    {{ range first 4 . }}
+    <a class="tag-pill" href="{{ printf "/tags/%s/" (. | urlize) | relLangURL }}">#{{ . }}</a>
+    {{ end }}
+  </div>
+  {{ end }}
+</article>

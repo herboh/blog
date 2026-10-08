@@ -1,0 +1,15 @@
+{{ define "main" }}
+<article class="simple-page">
+  <header class="page-header">
+    <p class="eyebrow">{{ if .Section }}{{ .Section | humanize }}{{ else }}Page{{ end }}</p>
+    <h1 class="page-title">{{ .Title | default .Site.Title }}</h1>
+    {{ with .Description }}
+    <p class="page-intro">{{ . }}</p>
+    {{ end }}
+  </header>
+
+  <div class="prose">
+    {{ .Content }}
+  </div>
+</article>
+{{ end }}

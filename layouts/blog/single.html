@@ -1,23 +1,35 @@
 {{ define "main" }}
-<article class="blog-post">
-  <header class="single-post-header">
-    <div class="post-date">
-      <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 19l7-7 3 3-7 7-3-3z"></path><path d="M18 13l-1.5-7.5L2 2l3.5 14.5L13 18l5-5z"></path><path d="M2 2l7.586 7.586"></path><circle cx="11" cy="11" r="2"></circle></svg>
+<article class="article-shell">
+  <header class="article-hero">
+    <a class="back-link" href="{{ "/blog/" | relLangURL }}">Back to blog</a>
+    <p class="eyebrow">Blog post</p>
+    <h1 class="article-title">{{ .Title }}</h1>
+
+    <div class="article-meta">
+      <time datetime="{{ .Date.Format "2006-01-02" }}">{{ .Date.Format "January 2, 2006" }}</time>
+      <span>{{ .ReadingTime }} min read</span>
+      <span>{{ .WordCount }} words</span>
     </div>
-    <time class="text-date" datetime="{{ .Date.Format "2006-01-02" }}">{{ .Date.Format "January 2, 2006" }}</time>
-    <h1 class="single-post-title">{{ .Title }}</h1>
-    
-    {{ if .Params.tags }}
-    <div class="post-tags">
-      {{ range $index, $tag := .Params.tags }}
-        <a href="{{ "/tags/" | relLangURL }}{{ $tag | urlize }}" class="post-tag">#{{ $tag }}</a>
+
+    {{ with .Description }}
+    <p class="page-intro">{{ . }}</p>
+    {{ end }}
+
+    {{ with .Params.tags }}
+    <div class="post-card__tags">
+      {{ range . }}
+      <a class="tag-pill" href="{{ printf "/tags/%s/" (. | urlize) | relLangURL }}">#{{ . }}</a>
       {{ end }}
     </div>
     {{ end }}
   </header>
-  
-  <div class="post-content">
+
+  <div class="article-body prose">
     {{ .Content }}
   </div>
+
+  <footer class="article-footer">
+    <a class="section-link" href="{{ "/blog/" | relLangURL }}">More posts</a>
+  </footer>
 </article>
 {{ end }}

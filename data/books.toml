@@ -1,0 +1,119 @@
+# Books page source of truth.
+# Keep entries in the order you want them displayed, usually newest first.
+# `isbn` is preferred because `scripts/sync_books.py` can resolve metadata and fetch
+# a local cover from Hardcover first when `HARDCOVER_TOKEN` is set.
+# `hardcover_id` is an optional explicit Hardcover book id if you want to pin a match.
+# `cover_source` is an optional fallback URL for books that need a manual cover hint.
+# `cover_file` is an optional local public path override such as
+# `/images/books/custom-cover.jpg`.
+
+[[books]]
+title = "The Fellowship of the Ring"
+author = "J.R.R. Tolkien"
+year_read = 2026
+
+[[books]]
+title = "The Two Towers"
+author = "J.R.R. Tolkien"
+year_read = 2026
+
+[[books]]
+title = "The Return of the King"
+author = "J.R.R. Tolkien"
+year_read = 2026
+
+[[books]]
+title = "The C Programming Language"
+author = "Brian W. Kernighan & Dennis M. Ritchie"
+year_read = 2026
+
+[[books]]
+title = "Project Hail Mary"
+author = "Andy Weir"
+year_read = 2025
+
+[[books]]
+title = "Blood Meridian"
+author = "Cormac McCarthy"
+year_read = 2025
+
+[[books]]
+title = "Moby Dick"
+author = "Herman Melville"
+isbn = "9780142437247"
+year_read = 2025
+
+[[books]]
+title = "Abundance"
+author = "Peter H. Diamandis & Steven Kotler"
+year_read = 2025
+
+[[books]]
+title = "There Is No Antimemetics Division"
+author = "qntm"
+year_read = 2025
+
+[[books]]
+title = "The Brothers Karamazov"
+author = "Fyodor Dostoevsky"
+year_read = 2024
+
+[[books]]
+title = "Foundation"
+author = "Isaac Asimov"
+year_read = 2024
+
+[[books]]
+title = "Death's End"
+author = "Cixin Liu"
+year_read = 2024
+
+[[books]]
+title = "1984"
+author = "George Orwell"
+year_read = 2024
+
+[[books]]
+title = "Dune"
+author = "Frank Herbert"
+year_read = 2023
+
+[[books]]
+title = "Dune Messiah"
+author = "Frank Herbert"
+year_read = 2023
+
+[[books]]
+title = "Children of Dune"
+author = "Frank Herbert"
+year_read = 2023
+
+[[books]]
+title = "The Three-Body Problem"
+author = "Cixin Liu"
+year_read = 2023
+
+[[books]]
+title = "The Dark Forest"
+author = "Cixin Liu"
+year_read = 2023
+
+[[books]]
+title = "The Martian"
+author = "Andy Weir"
+year_read = 2023
+
+[[books]]
+title = "Fahrenheit 451"
+author = "Ray Bradbury"
+year_read = 2023
+
+[[books]]
+title = "The Stranger"
+author = "Albert Camus"
+year_read = 2023
+
+[[books]]
+title = "Crime and Punishment"
+author = "Fyodor Dostoevsky"
+year_read = 2023

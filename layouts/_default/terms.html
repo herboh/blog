@@ -1,0 +1,16 @@
+{{ define "main" }}
+<section class="page-header page-header--compact">
+  <p class="eyebrow">Browse</p>
+  <h1 class="page-title">{{ .Title }}</h1>
+  <p class="page-intro">Jump to a topic and scan the related posts.</p>
+</section>
+
+<div class="tag-cloud">
+  {{ range .Data.Terms.Alphabetical }}
+  <a class="tag-pill tag-pill--large" href="{{ .Page.RelPermalink }}">
+    <span>#{{ .Term | lower }}</span>
+    <strong>{{ .Count }}</strong>
+  </a>
+  {{ end }}
+</div>
+{{ end }}

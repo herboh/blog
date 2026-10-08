@@ -1,0 +1,115 @@
+{
+  "books": {
+    "1984-george-orwell": {
+      "cover_image": "/images/books/1984-george-orwell.jpg",
+      "cover_source": "openlibrary-search",
+      "published": "2021"
+    },
+    "abundance-peter-h-diamandis-steven-kotler": {
+      "cover_image": "/images/books/abundance-peter-h-diamandis-steven-kotler.jpg",
+      "cover_source": "openlibrary-search",
+      "published": "2012"
+    },
+    "blood-meridian-cormac-mccarthy": {
+      "cover_image": "/images/books/blood-meridian-cormac-mccarthy.jpg",
+      "cover_source": "openlibrary-search",
+      "published": "1985"
+    },
+    "children-of-dune-frank-herbert": {
+      "cover_image": "/images/books/children-of-dune-frank-herbert.jpg",
+      "cover_source": "openlibrary-search",
+      "published": "1976"
+    },
+    "crime-and-punishment-fyodor-dostoevsky": {
+      "cover_image": "/images/books/crime-and-punishment-fyodor-dostoevsky.jpg",
+      "cover_source": "openlibrary-search",
+      "published": "2001"
+    },
+    "death-s-end-cixin-liu": {
+      "cover_image": "/images/books/death-s-end-cixin-liu.jpg",
+      "cover_source": "openlibrary-search",
+      "published": "2010"
+    },
+    "dune-frank-herbert": {
+      "cover_image": "/images/books/dune-frank-herbert.jpg",
+      "cover_source": "openlibrary-search",
+      "published": "1965"
+    },
+    "dune-messiah-frank-herbert": {
+      "cover_image": "/images/books/dune-messiah-frank-herbert.jpg",
+      "cover_source": "openlibrary-search",
+      "published": "1969"
+    },
+    "fahrenheit-451-ray-bradbury": {
+      "cover_image": "/images/books/fahrenheit-451-ray-bradbury.jpg",
+      "cover_source": "openlibrary-search",
+      "published": "1953"
+    },
+    "foundation-isaac-asimov": {
+      "cover_image": "/images/books/foundation-isaac-asimov.jpg",
+      "cover_source": "openlibrary-search",
+      "published": "1951"
+    },
+    "isbn-9780142437247": {
+      "cover_image": "/images/books/isbn-9780142437247.jpg",
+      "cover_source": "openlibrary",
+      "published": "2003"
+    },
+    "project-hail-mary-andy-weir": {
+      "cover_image": "/images/books/project-hail-mary-andy-weir.jpg",
+      "cover_source": "openlibrary-search",
+      "published": "2021"
+    },
+    "the-brothers-karamazov-fyodor-dostoevsky": {
+      "cover_image": "/images/books/the-brothers-karamazov-fyodor-dostoevsky.jpg",
+      "cover_source": "openlibrary-search",
+      "published": "2015"
+    },
+    "the-c-programming-language-brian-w-kernighan-dennis-m-ritchie": {
+      "cover_image": "/images/books/the-c-programming-language-brian-w-kernighan-dennis-m-ritchie.jpg",
+      "cover_source": "openlibrary-search",
+      "published": "1978"
+    },
+    "the-dark-forest-cixin-liu": {
+      "cover_image": "/images/books/the-dark-forest-cixin-liu.jpg",
+      "cover_source": "openlibrary-search",
+      "published": "2008"
+    },
+    "the-fellowship-of-the-ring-j-r-r-tolkien": {
+      "cover_image": "/images/books/the-fellowship-of-the-ring-j-r-r-tolkien.jpg",
+      "cover_source": "openlibrary-search",
+      "published": "1954"
+    },
+    "the-martian-andy-weir": {
+      "cover_image": "/images/books/the-martian-andy-weir.jpg",
+      "cover_source": "openlibrary-search",
+      "published": "2011"
+    },
+    "the-return-of-the-king-j-r-r-tolkien": {
+      "cover_image": "/images/books/the-return-of-the-king-j-r-r-tolkien.jpg",
+      "cover_source": "openlibrary-search",
+      "published": "1950"
+    },
+    "the-stranger-albert-camus": {
+      "cover_image": "/images/books/the-stranger-albert-camus.jpg",
+      "cover_source": "openlibrary-search",
+      "published": "1980"
+    },
+    "the-three-body-problem-cixin-liu": {
+      "cover_image": "/images/books/the-three-body-problem-cixin-liu.jpg",
+      "cover_source": "openlibrary-search",
+      "published": "2010"
+    },
+    "the-two-towers-j-r-r-tolkien": {
+      "cover_image": "/images/books/the-two-towers-j-r-r-tolkien.jpg",
+      "cover_source": "openlibrary-search",
+      "published": "1954"
+    },
+    "there-is-no-antimemetics-division-qntm": {
+      "cover_image": "/images/books/there-is-no-antimemetics-division-qntm.jpg",
+      "cover_source": "openlibrary-search",
+      "published": "2008"
+    }
+  },
+  "generated_at": "2026-03-24T05:10:51+00:00"
+}

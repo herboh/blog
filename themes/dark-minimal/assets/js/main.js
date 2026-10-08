@@ -1,119 +1,148 @@
-// Smooth scroll effect for internal links
-document.addEventListener('DOMContentLoaded', () => {
-  // Smooth scrolling for internal links
-  document.querySelectorAll('a[href^="#"]').forEach(anchor => {
-    anchor.addEventListener('click', function (e) {
-      e.preventDefault();
-      const target = document.querySelector(this.getAttribute('href'));
-      if (target) {
-        target.scrollIntoView({
-          behavior: 'smooth',
-          block: 'start'
-        });
-      }
-    });
-  });
+document.documentElement.classList.add("js");
 
-  // Add subtle fade-in animation for content
-  const mainContent = document.querySelector('.main-container');
-  if (mainContent) {
-    mainContent.style.opacity = '0';
-    mainContent.style.transition = 'opacity 0.5s ease-in-out';
-    setTimeout(() => {
-      mainContent.style.opacity = '1';
-    }, 50);
-  }
-  
-  // Add subtle hover effects for links
-  const links = document.querySelectorAll('a');
-  links.forEach(link => {
-    link.addEventListener('mouseenter', () => {
-      link.style.transition = 'all 0.2s ease-in-out';
-    });
-  });
-  
-  // Toggle dark/light theme (advanced feature)
-  const prefersDarkScheme = window.matchMedia('(prefers-color-scheme: dark)');
-  const currentTheme = localStorage.getItem('theme');
-  
-  // Set the initial theme based on saved preference or system preference
-  if (currentTheme === 'light') {
-    document.body.classList.add('light-theme');
-  } else if (currentTheme === 'dark') {
-    document.body.classList.add('dark-theme');
-  } else if (prefersDarkScheme.matches) {
-    document.body.classList.add('dark-theme');
-  }
-  
-  // Add theme toggle button to footer (optional)
-  const footer = document.querySelector('footer');
-  if (footer) {
-    const themeToggle = document.createElement('div');
-    themeToggle.className = 'theme-toggle';
-    themeToggle.innerHTML = `
-      <button id="theme-toggle" aria-label="Toggle dark/light theme">
-        <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-          <path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"></path>
-        </svg>
-      </button>
-    `;
-    footer.appendChild(themeToggle);
-    
-    // Toggle theme on button click
-    const toggleButton = document.getElementById('theme-toggle');
-    if (toggleButton) {
-      toggleButton.addEventListener('click', () => {
-        document.body.classList.toggle('light-theme');
-        
-        // Save preference
-        if (document.body.classList.contains('light-theme')) {
-          localStorage.setItem('theme', 'light');
-        } else {
-          localStorage.setItem('theme', 'dark');
-        }
-      });
-    }
-  }
-  
-  // Add code highlighting with highlight.js if code blocks are present
-  const codeBlocks = document.querySelectorAll('pre code');
-  if (codeBlocks.length > 0) {
-    // Lazy-load highlight.js only if code blocks are found
-    const highlightScript = document.createElement('script');
-    highlightScript.src = 'https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.7.0/highlight.min.js';
-    highlightScript.onload = () => {
-      hljs.highlightAll();
-    };
-    document.head.appendChild(highlightScript);
-    
-    // Add highlight.js styles
-    const highlightCss = document.createElement('link');
-    highlightCss.rel = 'stylesheet';
-    highlightCss.href = 'https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.7.0/styles/github-dark.min.css';
-    document.head.appendChild(highlightCss);
-  }
+const LANGUAGE_ALIASES = Object.freeze({
+  cjs: "javascript",
+  conf: "ini",
+  console: "shell",
+  golang: "go",
+  html5: "html",
+  jsx: "javascript",
+  md: "markdown",
+  mjs: "javascript",
+  plaintext: "text",
+  py: "python",
+  rs: "rust",
+  sh: "shell",
+  text: "text",
+  ts: "typescript",
+  tsx: "typescript",
+  txt: "text",
+  yml: "yaml",
 });
 
-// Add reading time calculator
-function calculateReadingTime() {
-  const content = document.querySelector('.main-container');
-  if (!content) return;
-  
-  const text = content.textContent;
-  const wordCount = text.split(/\s+/).length;
-  const readingTime = Math.ceil(wordCount / 200); // Average reading speed: 200 wpm
-  
-  const readingTimeElement = document.createElement('div');
-  readingTimeElement.className = 'reading-time';
-  readingTimeElement.innerHTML = `<span>${readingTime} min read</span>`;
-  
-  const titleElement = document.querySelector('h1');
-  if (titleElement && titleElement.parentNode) {
-    titleElement.parentNode.insertBefore(readingTimeElement, titleElement.nextSibling);
-  }
+const LANGUAGE_META = Object.freeze({
+  bash: { label: "Bash", short: ">", glyph: "", tone: "sunset" },
+  c: { label: "C", short: "C", glyph: "", tone: "sky" },
+  cpp: { label: "C++", short: "C++", glyph: "", tone: "sky" },
+  css: { label: "CSS", short: "CSS", glyph: "", tone: "gold" },
+  diff: { label: "Diff", short: "+/-", glyph: "󰦓", tone: "rose" },
+  go: { label: "Go", short: "Go", glyph: "", tone: "sky" },
+  html: { label: "HTML", short: "<>", glyph: "", tone: "sunset" },
+  ini: { label: "INI", short: "=", glyph: "", tone: "stone" },
+  javascript: { label: "JavaScript", short: "JS", glyph: "", tone: "gold" },
+  json: { label: "JSON", short: "{}", glyph: "", tone: "stone" },
+  lua: { label: "Lua", short: "Lua", glyph: "", tone: "sky" },
+  markdown: { label: "Markdown", short: "#", glyph: "", tone: "sage" },
+  nix: { label: "Nix", short: "Nix", glyph: "", tone: "sky" },
+  python: { label: "Python", short: "Py", glyph: "", tone: "sage" },
+  rust: { label: "Rust", short: "Rs", glyph: "", tone: "rose" },
+  shell: { label: "Shell", short: ">", glyph: "", tone: "sunset" },
+  text: { label: "Code", short: "//", glyph: "󰆍", tone: "stone" },
+  toml: { label: "TOML", short: "=", glyph: "", tone: "stone" },
+  typescript: { label: "TypeScript", short: "TS", glyph: "", tone: "sky" },
+  yaml: { label: "YAML", short: ":", glyph: "", tone: "sage" },
+  zsh: { label: "Zsh", short: ">", glyph: "", tone: "sunset" },
+});
+
+function humanizeLanguage(language) {
+  return language
+    .replace(/[-_]+/g, " ")
+    .replace(/\b\w/g, (char) => char.toUpperCase());
 }
 
-// Execute reading time calculation on blog posts
-if (window.location.pathname.includes('/blog/')) {
-  document.addEventListener('DOMContentLoaded', calculateReadingTime);
+function buildShortLabel(label) {
+  const compact = label.replace(/\s+/g, "");
+
+  if (compact.length <= 3) {
+    return compact.toUpperCase();
+  }
+
+  return compact.slice(0, 2).toUpperCase();
 }
+
+function getLanguageMeta(value) {
+  const normalized = (value || "").trim().toLowerCase();
+  const key = normalized ? LANGUAGE_ALIASES[normalized] || normalized : "text";
+  const known = LANGUAGE_META[key];
+
+  if (known) {
+    return { ...known, key };
+  }
+
+  const label = humanizeLanguage(key);
+  return {
+    key,
+    label,
+    short: buildShortLabel(label),
+    tone: "stone",
+  };
+}
+
+document.addEventListener("DOMContentLoaded", () => {
+  const hasNerdFont = [
+    '"Symbols Nerd Font Mono"',
+    '"Symbols Nerd Font"',
+    '"JetBrainsMono Nerd Font"',
+    '"MesloLGS Nerd Font Mono"',
+  ].some((fontName) => document.fonts?.check?.(`1em ${fontName}`, ""));
+  const header = document.querySelector(".site-header");
+  const navToggle = document.querySelector(".nav-toggle");
+  const nav = document.querySelector(".site-nav");
+
+  if (header && navToggle && nav) {
+    navToggle.addEventListener("click", () => {
+      const isOpen = header.classList.toggle("is-open");
+      navToggle.setAttribute("aria-expanded", String(isOpen));
+    });
+
+    nav.querySelectorAll("a").forEach((link) => {
+      link.addEventListener("click", () => {
+        header.classList.remove("is-open");
+        navToggle.setAttribute("aria-expanded", "false");
+      });
+    });
+  }
+
+  document.querySelectorAll(".highlight").forEach((block) => {
+    const pre = block.querySelector("pre");
+    const code = block.querySelector("code");
+
+    if (!pre || !code || block.querySelector(".code-block__topbar")) {
+      return;
+    }
+
+    const classLanguage = Array.from(code.classList).find((name) => name.startsWith("language-"));
+    const language = getLanguageMeta(code.dataset.lang || classLanguage?.replace("language-", ""));
+
+    block.dataset.codeLanguage = language.key;
+    block.dataset.codeTone = language.tone;
+
+    const topbar = document.createElement("div");
+    topbar.className = "code-block__topbar";
+
+    const meta = document.createElement("div");
+    meta.className = "code-block__meta";
+
+    const badge = document.createElement("span");
+    badge.className = "code-block__badge";
+
+    const icon = document.createElement("span");
+    icon.className = "code-block__icon";
+    icon.setAttribute("aria-hidden", "true");
+    icon.textContent = hasNerdFont && language.glyph ? language.glyph : language.short;
+
+    if (hasNerdFont && language.glyph) {
+      icon.classList.add("is-glyph");
+    }
+
+    const label = document.createElement("span");
+    label.className = "code-block__label";
+    label.textContent = language.label;
+
+    badge.append(icon, label);
+    meta.append(badge);
+
+    topbar.append(meta);
+    block.prepend(topbar);
+  });
+});

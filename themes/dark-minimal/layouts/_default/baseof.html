@@ -1,8 +1,9 @@
 {{ partial "head.html" . }}
 <div class="site-container">
+  <a class="skip-link" href="#content">Skip to content</a>
   {{ partial "header.html" . }}
 
-  <main class="main-container">
+  <main id="content" class="main-container">
     {{ block "main" . }}{{ end }}
   </main>
 

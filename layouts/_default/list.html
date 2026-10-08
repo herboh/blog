@@ -1,17 +1,19 @@
 {{ define "main" }}
 <section class="page-header page-header--compact">
-  <p class="eyebrow">Archive</p>
+  <p class="eyebrow">{{ .Kind | humanize }}</p>
   <h1 class="page-title">{{ .Title }}</h1>
   {{ with .Content }}
   <div class="page-intro prose">{{ . }}</div>
-  {{ else }}
-  <p class="page-intro">Notes on Linux, C, tooling, and whatever else is worth writing down.</p>
   {{ end }}
 </section>
 
+{{ if .Pages }}
 <div class="post-feed">
   {{ range .Pages.ByDate.Reverse }}
   {{ partial "post-card.html" . }}
   {{ end }}
 </div>
+{{ else }}
+<p class="empty-state">Nothing here yet.</p>
+{{ end }}
 {{ end }}

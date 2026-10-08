@@ -1,33 +1,71 @@
 {{ define "main" }}
+{{ $posts := first 5 (where site.RegularPages.ByDate.Reverse "Section" "blog") }}
 <div class="home-content">
-  <div class="profile-section">
-    <div class="profile-image">
-      <img src="/images/lechan.JPG" alt="{{ .Site.Params.authorName }}">
-    </div>
-    <div class="about-me">
-      <p>{{ .Site.Params.aboutMe | default "Hi, I'm a software developer and writer. This is my personal blog where I share my thoughts on technology, books, and life." }}</p>
-    </div>
-  </div>
-  
-  {{ .Content }}
-  
-  <h2>Recent Posts</h2>
-  <div class="post-list">
-    {{ range first 5 (where .Site.RegularPages "Section" "blog") }}
-    <article class="post-item">
-      <div class="post-date">
-        <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 19l7-7 3 3-7 7-3-3z"></path><path d="M18 13l-1.5-7.5L2 2l3.5 14.5L13 18l5-5z"></path><path d="M2 2l7.586 7.586"></path><circle cx="11" cy="11" r="2"></circle></svg>
+  <section class="home-intro">
+    <div class="home-intro__media">
+      <div class="profile-image">
+        <img src="{{ "/images/lechan.JPG" | relURL }}" alt="{{ .Site.Params.authorName }}">
       </div>
-      <time class="text-date">{{ .Date.Format "Jan 02, 2006" }}</time>
-      <h2 class="post-title">
-        <a href="{{ .Permalink }}">{{ .Title }}</a>
-      </h2>
-    </article>
-    {{ end }}
-  </div>
-  
-  <div class="home-section-nav">
-    <a href="/blog/" class="view-all">View all posts →</a>
-  </div>
+    </div>
+
+    <div class="home-intro__copy">
+      <p class="eyebrow">Software, Linux, and side projects</p>
+      <h1 class="home-title">{{ .Site.Params.authorName }}</h1>
+      <p class="hero-lede">{{ .Site.Params.aboutMe }}</p>
+      {{ with .Site.Params.homeStatus }}
+      <p class="intro-status">{{ . }}</p>
+      {{ end }}
+    </div>
+  </section>
+
+  {{ with .Content }}
+  <section class="home-section home-section--copy">
+    <div class="prose">{{ . }}</div>
+  </section>
+  {{ end }}
+
+  <section class="home-section">
+    <div class="section-heading">
+      <div>
+        <p class="eyebrow">Recent</p>
+        <h2>Writing</h2>
+      </div>
+      <a class="section-link" href="{{ "/blog/" | relLangURL }}">Archive</a>
+    </div>
+
+    <div class="home-post-list">
+      {{ range $posts }}
+      <article class="home-post">
+        <div class="home-post__meta">
+          <time datetime="{{ .Date.Format "2006-01-02" }}">{{ .Date.Format "Jan 2, 2006" }}</time>
+          <span>{{ .ReadingTime }} min read</span>
+        </div>
+
+        <h3 class="home-post__title">
+          <a href="{{ .RelPermalink }}">{{ .Title }}</a>
+        </h3>
+
+        {{ with .Summary }}
+        <p class="home-post__summary">{{ . | plainify | truncate 160 }}</p>
+        {{ end }}
+      </article>
+      {{ end }}
+    </div>
+  </section>
+
+  <section class="home-section home-section--compact home-section--footer">
+    <p class="eyebrow">Elsewhere</p>
+    <p class="section-copy">
+      The site stays static on purpose. There is also a
+      <a href="{{ "/books/" | relLangURL }}">bookshelf</a>,
+      a rebuilding <a href="{{ "/cv/" | relLangURL }}">CV</a>,
+      and
+      {{ with .Site.Params.github }}
+      <a href="https://github.com/{{ . }}" target="_blank" rel="noopener noreferrer">GitHub</a>.
+      {{ else }}
+      GitHub links throughout the site.
+      {{ end }}
+    </p>
+  </section>
 </div>
 {{ end }}

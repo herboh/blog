@@ -1,25 +1,121 @@
 {{ define "main" }}
-<div class="books-section">
-  <h1>{{ .Title }}</h1>
-  
-  {{ range .Params.books }}
-  <div class="books-year">
-    <h2 class="year-heading">{{ .year }}</h2>
-    
-    <div class="books-grid">
-      {{ range .list }}
-      <div class="book-card">
-        <div class="book-cover">
-          {{ partial "book-cover.html" (dict "title" .title "author" .author "cover" .cover "isbn" .isbn) }}
-        </div>
-        <div class="book-details">
-          <h3 class="book-title">{{ .title }}</h3>
-          <div class="book-author">{{ .author }}</div>
-        </div>
-      </div>
-      {{ end }}
-    </div>
-  </div>
+{{ $books := hugo.Data.books.books | default (slice) }}
+{{ $cache := hugo.Data.books_cache.books | default (dict) }}
+{{ $years := slice }}
+{{ range $books }}
+  {{ $year := printf "%v" (.year_read | default "Unknown") }}
+  {{ if not (in $years $year) }}
+    {{ $years = $years | append $year }}
   {{ end }}
+{{ end }}
+<div class="books-section">
+  <header class="page-header page-header--compact">
+    <p class="eyebrow">Shelf</p>
+    <h1 class="page-title">{{ .Title }}</h1>
+    {{ with .Content }}
+    <div class="page-intro prose">{{ . }}</div>
+    {{ end }}
+  </header>
+
+  <div class="books-catalogue">
+    {{ range $years }}
+      {{ $year := . }}
+      {{ $count := 0 }}
+      {{ range $books }}
+        {{ if eq (printf "%v" (.year_read | default "Unknown")) $year }}
+          {{ $count = add $count 1 }}
+        {{ end }}
+      {{ end }}
+
+      <section class="books-year-block" aria-labelledby="year-{{ $year | urlize }}">
+        <header class="books-year-header">
+          <div class="books-year-heading">
+            <h2 class="books-year-title" id="year-{{ $year | urlize }}">{{ $year }}</h2>
+            <p class="books-year-count">{{ $count }} {{ cond (eq $count 1) "book" "books" }}</p>
+          </div>
+        </header>
+
+        <div class="books-cards" role="list">
+          {{ $slot := 0 }}
+          {{ range $books }}
+            {{ if eq (printf "%v" (.year_read | default "Unknown")) $year }}
+              {{ $book := . }}
+              {{ $slot = add $slot 1 }}
+              {{ $bookID := "" }}
+              {{ if $book.id }}
+                {{ $bookID = replaceRE "^-+|-+$" "" (replaceRE "[^a-z0-9]+" "-" (lower $book.id)) }}
+              {{ else if $book.isbn }}
+                {{ $bookID = printf "isbn-%s" (replaceRE "[^0-9Xx]" "" $book.isbn | lower) }}
+              {{ else }}
+                {{ $bookID = replaceRE "^-+|-+$" "" (replaceRE "[^a-z0-9]+" "-" (lower (printf "%s-%s" ($book.title | default "") ($book.author | default "")))) }}
+              {{ end }}
+              {{ $cached := index $cache $bookID }}
+
+              {{ $title := $book.title | default "" }}
+              {{ if and (eq $title "") $cached }}
+                {{ $title = index $cached "title" | default "" }}
+              {{ end }}
+              {{ if eq $title "" }}
+                {{ $title = "Untitled" }}
+              {{ end }}
+
+              {{ $author := $book.author | default "" }}
+              {{ if and (eq $author "") $cached }}
+                {{ $author = index $cached "author" | default "" }}
+              {{ end }}
+
+              {{ $cover := $book.cover_file | default "" }}
+              {{ if and (eq $cover "") $cached }}
+                {{ $cover = index $cached "cover_image" | default "" }}
+              {{ end }}
+              {{ if eq $cover "" }}
+                {{ $cover = "/images/covers/default-cover.jpg" }}
+              {{ end }}
+
+              {{ $source := "" }}
+              {{ if $cached }}
+                {{ $source = index $cached "cover_source" | default "" }}
+              {{ end }}
+
+              <article class="book-card" role="listitem">
+                <div class="book-card__cover-wrap">
+                  <div class="book-card__cover">
+                    <img src="{{ $cover | relURL }}" alt="{{ $title }}{{ with $author }} by {{ . }}{{ end }}" loading="lazy">
+                  </div>
+                  <span class="book-card__index">{{ printf "%02d" $slot }}</span>
+                </div>
+                <div class="book-card__body">
+                  <div class="book-card__main">
+                    <h3 class="book-card__title">{{ $title }}</h3>
+                    {{ with $author }}
+                    <p class="book-card__author">{{ . }}</p>
+                    {{ end }}
+                  </div>
+                  <div class="book-card__meta" aria-label="reading notes">
+                    {{ with $book.year_read }}
+                    <span>read {{ . }}</span>
+                    {{ end }}
+                    {{ with $book.rating }}
+                    <span>{{ . }}/5</span>
+                    {{ end }}
+                    {{ if eq $source "hardcover" }}
+                    <span>hardcover</span>
+                    {{ end }}
+                  </div>
+                  {{ with $book.comment }}
+                  <p class="book-card__comment">{{ . }}</p>
+                  {{ end }}
+                </div>
+              </article>
+            {{ end }}
+          {{ end }}
+        </div>
+      </section>
+    {{ end }}
+
+    {{ if not $books }}
+    <p class="empty-state">No books yet.</p>
+    {{ end }}
+  </div>
 </div>
 {{ end }}

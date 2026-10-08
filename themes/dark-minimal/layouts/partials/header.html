@@ -1,13 +1,25 @@
-<header>
+{{ $current := .RelPermalink }}
+<header class="site-header">
   <div class="header-content">
-    <div class="site-title">
-      <a href="/">
-        {{ .Site.Title }}
-      </a>
+    <div class="site-brand">
+      <a class="site-title" href="{{ .Site.Home.RelPermalink }}">{{ .Site.Title }}</a>
+      <p class="site-tagline">{{ .Site.Params.tagline }}</p>
     </div>
-    <nav>
+
+    <button class="nav-toggle" type="button" aria-expanded="false" aria-controls="site-nav">
+      <span>Menu</span>
+    </button>
+
+    <nav id="site-nav" class="site-nav" aria-label="Primary">
       {{ range .Site.Menus.main }}
-      <a href="{{ .URL }}">{{ .Name }}</a>
+      {{ $menuURL := .URL | relLangURL }}
+      {{ $isActive := false }}
+      {{ if eq $menuURL $.Site.Home.RelPermalink }}
+        {{ $isActive = eq $current $menuURL }}
+      {{ else if hasPrefix $current $menuURL }}
+        {{ $isActive = true }}
+      {{ end }}
+      <a href="{{ $menuURL }}"{{ if $isActive }} class="is-active" aria-current="page"{{ end }}>{{ .Name }}</a>
       {{ end }}
     </nav>
   </div>
