@@ -27,6 +27,11 @@ name = "Books"
 url = "/books/"
 weight = 3
 
+[[menu.main]]
+name = "Interests"
+url = "/interests/"
+weight = 4
+
 [taxonomies]
 tag = "tags"
 

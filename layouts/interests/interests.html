@@ -1,0 +1,124 @@
+{{ define "main" }}
+{{ $data := hugo.Data.interests }}
+<div class="interests-page">
+  <header class="interests-hero">
+    {{ if $data.demo }}<p class="interest-preview-banner">Design preview · synthetic activity, not personal history</p>{{ end }}
+    <p class="eyebrow">An ongoing record</p>
+    <h1>Time well spent<span aria-hidden="true">.</span></h1>
+    <div class="prose interests-intro">{{ .Content }}</div>
+    <nav class="interests-jump" aria-label="Interests">
+      <a href="#music">01 <span>Listening</span></a>
+      <a href="#games">02 <span>Playing</span></a>
+      <a href="#books">03 <span>Reading</span></a>
+      <a href="#movies">04 <span>Watching</span></a>
+    </nav>
+  </header>
+
+  {{ range $index, $section := $data.sections }}
+  <section id="{{ .key }}" class="interest-section interest-{{ .key }}" data-interest-section>
+    <header class="interest-heading">
+      <div>
+        <p class="eyebrow interest-source"><span class="source-dot source-dot--{{ .status }}" aria-hidden="true"></span>{{ .source }}</p>
+        <h2><span class="interest-number">{{ printf "%02d" (add $index 1) }}</span>{{ .title }}</h2>
+      </div>
+      <div class="interest-sync">
+        {{ if .as_of }}
+          <span>{{ if eq .status "saved" }}Showing saved history{{ else }}Last synced{{ end }}</span>
+          <time datetime="{{ .as_of }}" data-sync-time>{{ time.Format "Jan 2, 2006 · 15:04 MST" (time.AsTime .as_of "UTC") }}</time>
+        {{ else if eq .status "local" }}
+          <a href="{{ "/books/" | relURL }}">From the bookshelf ↗</a>
+        {{ else }}
+          <span>Awaiting first collection</span>
+        {{ end }}
+      </div>
+    </header>
+
+    <p class="interest-coverage">{{ .coverage }}</p>
+    <div class="interest-period-control" hidden>
+      <label for="period-{{ .key }}">Explore</label>
+      <select id="period-{{ .key }}" data-period-select>
+        {{ range .periods }}<option value="{{ .id }}">{{ .label }}</option>{{ end }}
+      </select>
+    </div>
+
+    {{ $key := .key }}
+    {{ range .periods }}
+    <div class="interest-period" data-period="{{ .id }}" id="{{ $key }}-{{ .id }}">
+      <div class="interest-period-title"><h3>{{ .label }}</h3></div>
+      {{ if .items }}
+      <div class="interest-stats">
+        {{ range .metrics }}<div><strong>{{ .value }}</strong><span>{{ .label }}</span></div>{{ end }}
+      </div>
+      <div class="interest-layout{{ if .secondary }} interest-layout--split{{ end }}">
+        <div>
+          <h4 class="interest-list-label">{{ .heading }}</h4>
+          <ol class="interest-items interest-items--{{ $key }}">
+            {{ range $i, $item := .items }}
+            <li class="interest-item">
+              <span class="interest-rank">{{ printf "%02d" (add $i 1) }}</span>
+              <div class="interest-art{{ if not .image }} interest-art--empty{{ end }}">
+                <span aria-hidden="true">{{ substr .title 0 1 }}</span>
+                {{ with .image }}<img src="{{ . }}" alt="" loading="lazy" decoding="async" referrerpolicy="no-referrer">{{ end }}
+              </div>
+              <div class="interest-item-copy">
+                <h5>{{ if .url }}<a href="{{ .url }}">{{ .title }}</a>{{ else }}{{ .title }}{{ end }}</h5>
+                {{ with .creator }}<p>{{ . }}</p>{{ end }}
+                {{ with .date }}<time datetime="{{ . }}">{{ time.Format "Jan 2, 2006" . }}</time>{{ end }}
+              </div>
+              <span class="interest-item-metric">{{ .metric }}</span>
+            </li>
+            {{ end }}
+          </ol>
+        </div>
+        {{ with .secondary }}
+        <aside class="interest-artists">
+          <h4 class="interest-list-label">Artists on repeat</h4>
+          {{ range . }}<div><strong>{{ .title }}</strong><span>{{ .metric }}</span></div>{{ end }}
+        </aside>
+        {{ end }}
+      </div>
+      {{ $seriesLabel := .series_label }}
+      {{ with .series }}
+        {{ $max := 1.0 }}{{ range . }}{{ $max = math.Max $max .value }}{{ end }}
+        <figure class="interest-chart">
+          <figcaption>{{ $seriesLabel }}</figcaption>
+          <div class="interest-bars" role="list" aria-label="Monthly activity">
+          {{ range . }}
+            {{ $height := math.Max 3 (mul (div (float .value) $max) 100) }}
+            <div class="interest-bar-column" role="listitem" aria-label="{{ .label }}: {{ .value }}">
+              <span class="interest-bar-value">{{ .value }}</span>
+              <div class="interest-bar-track"><span style="height: {{ $height }}%"></span></div>
+              <span class="interest-bar-label">{{ .label }}</span>
+            </div>
+          {{ end }}
+          </div>
+        </figure>
+      {{ end }}
+      {{ else }}
+        <div class="interest-empty">
+          <span class="interest-empty-mark" aria-hidden="true">{{ if eq $key "music" }}♫{{ else if eq $key "games" }}↗{{ else if eq $key "movies" }}▷{{ else }}≡{{ end }}</span>
+          <div><h4>No activity recorded for this period yet.</h4><p>The next collection will fill in this part of the story.</p></div>
+        </div>
+      {{ end }}
+      <p class="interest-note">{{ .note }}</p>
+    </div>
+    {{ end }}
+
+    {{ with .favorites }}
+    <aside class="interest-favorites"><h3>Personal favorites</h3><div>
+      {{ range . }}<article><h4>{{ if .url }}<a href="{{ .url }}">{{ .title }}</a>{{ else }}{{ .title }}{{ end }}</h4>{{ with .note }}<p>{{ . }}</p>{{ end }}</article>{{ end }}
+    </div></aside>
+    {{ end }}
+    {{ with .rated }}
+    <aside class="interest-favorites"><h3>Highest rated · all recorded</h3><div>
+      {{ range . }}<article><h4>{{ .title }}</h4><p>{{ .metric }}</p></article>{{ end }}
+    </div></aside>
+    {{ end }}
+  </section>
+  {{ end }}
+  <footer class="interests-footnote">
+    <p>Collected over time. Each source keeps its own last successful update, so the record stays here even when a service is unavailable.</p>
+    <p>Most played reflects time and repetition. Personal favorites, when listed, are my own picks.</p>
+  </footer>
+</div>
+{{ end }}
