@@ -1,9 +1,13 @@
 # Public presentation settings. Credentials and account identifiers do not belong here.
 timezone = "America/New_York"
-# Films on the profile always come from Letterboxd; TV comes from Tautulli.
+# Favorite films come from Letterboxd; recent films and TV come from Tautulli.
 movies_source = "letterboxd"
 # Optional Steam app IDs to omit from ALL exported views and totals.
-exclude_steam_apps = []
+exclude_steam_apps = [
+    252950,  # Rocket League
+    578080,  # PUBG: BATTLEGROUNDS
+    4032350, # EA SPORTS College Football 27
+]
 # Only publish these Steam app IDs when nonempty; empty publishes all returned games.
 include_steam_apps = []
 # Optional TV picks appear before the most-played shows. Existing titles reuse

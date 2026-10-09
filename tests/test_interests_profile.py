@@ -28,14 +28,14 @@ class ProfileTest(unittest.TestCase):
             return dict(id=str(i), occurred=NOW - i, item=stable_id(title), title=title, creator='', image='', url='')
         with self.db:
             set_meta(self.db, 'film_favorites', [dict(title='Favorite film', subtitle='1999', image='', url='')])
-            save_events(self.db, 'tautulli', [event('Private movie history', 0)])
+            save_events(self.db, 'tautulli', [event('Recent Plex film', 0)])
             save_events(self.db, 'letterboxd', [event('Recent diary film', 1)])
             save_events(self.db, 'tautulli_tv', [event('New show', 1), *[event('Most played show', i) for i in range(2, 5)]])
         view = publish.export(self.db, ROOT, {'show_picks': [{'title': 'Untracked favorite'}]}, NOW)['profile']
         films, shows = view['watching']
         self.assertEqual(films['items'][0]['title'], 'Favorite film')
-        self.assertEqual(films['recent'][0]['title'], 'Recent diary film')
-        self.assertNotIn('Private movie history', json.dumps(view))
+        self.assertEqual(films['recent'][0]['title'], 'Recent Plex film')
+        self.assertNotIn('Recent diary film', json.dumps(view))
         self.assertEqual([s['title'] for s in shows['items']], ['Untracked favorite', 'Most played show', 'New show'])
         self.assertEqual(shows['recent'][0]['title'], 'New show')
         self.assertNotIn('occurred', json.dumps(view))
@@ -43,12 +43,27 @@ class ProfileTest(unittest.TestCase):
 
     def test_excluded_steam_game_is_absent_from_top_and_recent(self):
         with self.db:
-            for app, title in [('10', 'Keep me'), ('20', 'Hide me')]:
-                item = dict(appid=app, title=title, minutes=100, recent_minutes=10, image='', url='')
-                self.db.execute('INSERT INTO snapshots VALUES (?,?,?,?)', (NOW, app, 100, json.dumps(item)))
-        view = publish.export(self.db, ROOT, {'exclude_steam_apps': [20]}, NOW)['profile']
-        self.assertIn('Keep me', json.dumps(view))
-        self.assertNotIn('Hide me', json.dumps(view))
+            for n, title in enumerate(['Hide one', 'Keep one', 'Hide two', 'Keep two', 'Hide three', 'Keep three'], 1):
+                item = dict(appid=str(n), title=title, minutes=1000 - n, recent_minutes=100 - n, image='', url='')
+                self.db.execute('INSERT INTO snapshots VALUES (?,?,?,?)', (NOW, str(n), item['minutes'], json.dumps(item)))
+        view = publish.export(self.db, ROOT, {'exclude_steam_apps': [1, 3, 5]}, NOW)['profile']
+        games = next(s for s in view['shelves'] if s['key'] == 'games')
+        for key in ['items', 'recent']:
+            self.assertEqual([i['title'] for i in games[key]], ['Keep one', 'Keep two', 'Keep three'])
+        self.assertNotIn('Hide', json.dumps(view))
+
+    def test_recent_films_use_distinct_saved_plex_plays_and_fall_back_before_first_collection(self):
+        def event(title, index):
+            return dict(id=str(index), occurred=NOW - index, item=stable_id(title), title=title, creator='', image='', url='')
+        with self.db:
+            save_events(self.db, 'letterboxd', [event('Diary fallback', 0)])
+        films = publish.export(self.db, ROOT, {}, NOW)['profile']['watching'][0]
+        self.assertEqual(films['recent'][0]['title'], 'Diary fallback')
+        with self.db:
+            save_events(self.db, 'tautulli', [event(title, n) for n, title in enumerate(['Newest', 'Newest', 'Second', 'Third', 'Older'], 1)])
+            set_meta(self.db, 'tautulli', {'last_success': NOW, 'failed': True})
+        films = publish.export(self.db, ROOT, {}, NOW)['profile']['watching'][0]
+        self.assertEqual([i['title'] for i in films['recent']], ['Newest', 'Second', 'Third'])
 
     def test_failed_enrichment_retains_saved_favorites(self):
         with self.db:

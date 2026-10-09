@@ -130,8 +130,10 @@ public purge. Unchanged feeds are not evidence of a complete archive.
 
 ## What appears on the page
 
-**Films:** the four favorites on the Letterboxd profile lead, followed by the three
-most recent distinct dated diary films. If no favorites have ever been saved, rated
+**Films:** the four favorites on the Letterboxd profile lead. “Lately” uses the three
+most recent distinct completed movie plays from Tautulli for the configured user;
+saved Plex history remains during outages. Before any Plex movie history has been
+collected, dated Letterboxd diary films provide a fallback. If no favorites have ever been saved, rated
 diary films are a fallback labeled “Highly rated.” Favorites come from public profile
 HTML, so bot protection or markup changes can prevent refresh; the last successful
 selection remains. One failed poster request does not discard the selection. The

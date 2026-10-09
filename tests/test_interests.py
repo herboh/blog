@@ -157,7 +157,12 @@ class HistoryTest(unittest.TestCase):
         self.assertIn(item + ".jpg", artwork.referenced_posters(view))
         artwork.publish_posters(view, root, cache)
         self.assertTrue((root / "static/images/interests" / (item + ".jpg")).is_file())
-        # Switching sources removes the public artifact, retaining its private backup.
+        # Switching the internal movie projection must retain art still used by Plex recents.
+        view = publish.export(self.db, ROOT, {"movies_source": "letterboxd"}, NOW, artwork_dir=cache)
+        self.assertIn(item + ".jpg", artwork.referenced_posters(view))
+        # Once newer distinct films displace it, its public copy can be pruned.
+        with self.db:
+            save_events(self.db, "tautulli", [track("New film " + str(i), occurred=NOW - i) for i in range(3)])
         view = publish.export(self.db, ROOT, {"movies_source": "letterboxd"}, NOW, artwork_dir=cache)
         artwork.publish_posters(view, root, cache)
         artwork.prune_posters(view, root)
