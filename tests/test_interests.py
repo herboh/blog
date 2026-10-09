@@ -10,8 +10,8 @@ from zoneinfo import ZoneInfo
 
 ROOT = Path(__file__).resolve().parents[1]
 sys.path.insert(0, str(ROOT / "scripts"))
-from interests import publish, sources
-from interests.storage import atomic_json, connect, get_meta, save_events, set_meta
+from interests import artwork, publish, sources
+from interests.storage import atomic_json, connect, get_meta, save_events, set_meta, stable_id
 from sync_interests import collect, read_env
 
 NOW = 1791450000
@@ -121,9 +121,68 @@ class HistoryTest(unittest.TestCase):
         with self.db:
             save_events(self.db, "tautulli", [track("Film")])
             set_meta(self.db, "tautulli", {"last_success": NOW})
-            set_meta(self.db, "covers", {"tautulli:Film": "/images/interests/missing.jpg"})
+            set_meta(self.db, "covers", {"tautulli:Film": "/images/interests/" + stable_id("missing") + ".jpg"})
         view = publish.export(self.db, ROOT, {}, NOW)
         self.assertEqual(view["sections"][3]["periods"][0]["items"][0]["image"], "")
+
+    def test_letterboxd_reimport_retains_artwork_but_updates_rating(self):
+        event = {**track("Film"), "image": "https://a.ltrbxd.com/poster.jpg", "rating": 3.0}
+        with self.db:
+            save_events(self.db, "letterboxd", [event])
+            save_events(self.db, "letterboxd", [{**event, "image": "", "url": "", "rating": 4.5}])
+        saved = json.loads(self.db.execute("SELECT payload FROM events").fetchone()[0])
+        self.assertEqual(saved["image"], event["image"])
+        self.assertEqual(saved["url"], event["url"])
+        self.assertEqual(saved["rating"], 4.5)
+
+    def test_poster_collection_stays_private_until_selected(self):
+        from unittest.mock import MagicMock
+        root = Path(self.temp.name)
+        cache = root / ".local/interests/artwork"
+        item = stable_id("Film", "2020")
+        film = {**track("Film"), "item": item, "creator": "2020", "poster_key": "123"}
+        with self.db:
+            save_events(self.db, "tautulli", [film])
+            set_meta(self.db, "tautulli", {"last_success": NOW})
+        opener = MagicMock()
+        opener.open.return_value.__enter__.return_value.read.return_value = b"\xff\xd8\xffposter"
+        env = dict(TAUTULLI_URL="http://example.invalid", TAUTULLI_USER_ID="12", TAUTULLI_API_KEY="secret")
+        with patch("interests.artwork.urllib.request.build_opener", return_value=opener):
+            artwork.cache_posters(self.db, cache, env)
+        self.assertTrue((cache / (item + ".jpg")).is_file())
+        self.assertFalse((root / "static").exists())
+        self.assertEqual((cache / (item + ".jpg")).stat().st_mode & 0o777, 0o600)
+        # The public projection can now reference the privately cached poster.
+        view = publish.export(self.db, ROOT, {"movies_source": "tautulli"}, NOW, artwork_dir=cache)
+        self.assertIn(item + ".jpg", artwork.referenced_posters(view))
+        artwork.publish_posters(view, root, cache)
+        self.assertTrue((root / "static/images/interests" / (item + ".jpg")).is_file())
+        # Switching the internal movie projection must retain art still used by Plex recents.
+        view = publish.export(self.db, ROOT, {"movies_source": "letterboxd"}, NOW, artwork_dir=cache)
+        self.assertIn(item + ".jpg", artwork.referenced_posters(view))
+        # Once newer distinct films displace it, its public copy can be pruned.
+        with self.db:
+            save_events(self.db, "tautulli", [track("New film " + str(i), occurred=NOW - i) for i in range(3)])
+        view = publish.export(self.db, ROOT, {"movies_source": "letterboxd"}, NOW, artwork_dir=cache)
+        artwork.publish_posters(view, root, cache)
+        artwork.prune_posters(view, root)
+        self.assertEqual(list((root / "static").rglob("*.jpg")), [])
+        self.assertTrue((cache / (item + ".jpg")).is_file())
+
+    def test_legacy_posters_are_backed_up_before_public_pruning(self):
+        root = Path(self.temp.name)
+        public = root / "static/images/interests"
+        cache = root / ".local/interests/artwork"
+        public.mkdir(parents=True)
+        name = stable_id("not selected") + ".jpg"
+        (public / name).write_bytes(b"poster")
+        (public / "hand-authored.jpg").write_bytes(b"unrelated")
+        artwork.migrate_posters(root, cache)
+        artwork.publish_posters({"sections": []}, root, cache)
+        artwork.prune_posters({"sections": []}, root)
+        self.assertEqual((cache / name).read_bytes(), b"poster")
+        self.assertFalse((public / name).exists())
+        self.assertTrue((public / "hand-authored.jpg").is_file())
 
     def test_transaction_rolls_back_malformed_batch(self):
         env = {"LASTFM_API_KEY": "secret", "LASTFM_USERNAME": "person"}
@@ -210,6 +269,73 @@ class ProviderTest(unittest.TestCase):
 
 
 class ReleaseTest(unittest.TestCase):
+    def test_release_prunes_posters_carried_by_old_git_commits(self):
+        import io
+        import tarfile
+        from refresh_interests import export_source
+        with tempfile.TemporaryDirectory() as temp:
+            root, target = Path(temp) / "root", Path(temp) / "export"
+            (root / "data").mkdir(parents=True)
+            snapshot = {"version": 1, "sections": []}
+            (root / "data/interests.json").write_text(json.dumps(snapshot))
+            old_poster = "static/images/interests/" + stable_id("old") + ".jpg"
+            archive = io.BytesIO()
+            with tarfile.open(fileobj=archive, mode="w") as handle:
+                for name, content in {"data/interests.json": b"{}", old_poster: b"not selected"}.items():
+                    entry = tarfile.TarInfo(name)
+                    entry.size = len(content)
+                    handle.addfile(entry, io.BytesIO(content))
+            with patch("refresh_interests.subprocess.check_output", side_effect=["a" * 40, archive.getvalue()]):
+                export_source(root, target)
+            self.assertFalse((target / old_poster).exists())
+
+    def test_failed_build_keeps_previous_release(self):
+        import subprocess
+        from refresh_interests import main
+        with tempfile.TemporaryDirectory() as temp:
+            root = Path(temp)
+            current = root / ".local/interests-site"
+            current.mkdir(parents=True)
+            (current / "index.html").write_text("previous checked release")
+            previous_umask = os.umask(0o077)
+            try:
+                with patch("refresh_interests.ROOT", root), patch("sys.argv", ["refresh_interests.py", "--offline", "--output", str(root / "data/interests.json")]), patch("refresh_interests.export_source", return_value="a" * 40), patch("refresh_interests.subprocess.run", side_effect=[subprocess.CompletedProcess([], 0), subprocess.CompletedProcess([], 1)]):
+                    self.assertEqual(main(), 1)
+            finally:
+                os.umask(previous_umask)
+            self.assertEqual((current / "index.html").read_text(), "previous checked release")
+
+    def test_public_release_permissions_do_not_change_private_siblings(self):
+        from refresh_interests import prepare_public_permissions
+        with tempfile.TemporaryDirectory() as temp:
+            root = Path(temp)
+            site = root / "site"
+            (site / "interests").mkdir(parents=True, mode=0o700)
+            html = site / "interests/index.html"
+            html.write_text("page")
+            html.chmod(0o600)
+            private = root / "history.sqlite3"
+            private.write_bytes(b"private")
+            private.chmod(0o600)
+            prepare_public_permissions(site)
+            self.assertEqual(html.stat().st_mode & 0o777, 0o644)
+            self.assertEqual(html.parent.stat().st_mode & 0o777, 0o755)
+            self.assertEqual(site.stat().st_mode & 0o777, 0o755)
+            self.assertEqual(private.stat().st_mode & 0o777, 0o600)
+
+    def test_release_rejects_custom_output_before_collecting(self):
+        from refresh_interests import main
+        with patch("sys.argv", ["refresh_interests.py", "--output", "/tmp/snapshot.json"]), patch("refresh_interests.subprocess.run") as run:
+            self.assertEqual(main(), 1)
+            run.assert_not_called()
+
+    def test_release_rejects_invalid_options_before_collecting(self):
+        from refresh_interests import main
+        with patch("sys.argv", ["refresh_interests.py", "--out", "/tmp/snapshot.json"]), patch("refresh_interests.subprocess.run") as run:
+            with self.assertRaises(SystemExit):
+                main()
+            run.assert_not_called()
+
     def test_release_exports_git_source_not_untracked_private_files(self):
         from refresh_interests import export_source
         with tempfile.TemporaryDirectory() as temp:

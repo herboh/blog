@@ -1,95 +1,84 @@
-/* A record of activity, using the site's existing palette and typography. */
-.interests-page { --interest-color: var(--accent); max-width: var(--content-max); margin: auto; }
-.interests-page [hidden] { display: none !important; }
-.interests-hero { padding: 1.5rem 0 0; }
-.interests-hero h1 { font-size: clamp(2.7rem, 6vw, 5.4rem); letter-spacing: -.065em; margin: .5rem 0 1.4rem; color: var(--text); }
-.interests-hero h1 span { color: var(--accent); }
-.interests-intro { max-width: 42rem; font-size: 1.12rem; color: var(--text-soft); }
-.interests-jump { display: grid; grid-template-columns: repeat(4, 1fr); border-top: 1px solid var(--border); border-bottom: 1px solid var(--border); margin-top: 2.5rem; }
-.interests-jump a { display: flex; align-items: center; gap: .8rem; padding: 1.1rem .7rem; font: .7rem var(--font-mono); color: var(--muted); }
-.interests-jump a + a { border-left: 1px solid var(--border); }
-.interests-jump a span { font: 1rem var(--font-sans); color: var(--text); }
-.interests-jump a:hover { background: var(--accent-soft); }
-.interest-section { padding: 3.3rem 0; border-bottom: 1px solid var(--border); scroll-margin-top: 2rem; }
-.interest-music { --interest-color: #d3869b; }
-.interest-games { --interest-color: #83a598; }
-.interest-books { --interest-color: #fabd2f; }
-.interest-movies { --interest-color: #8ec07c; }
-.interest-heading { display: flex; justify-content: space-between; gap: 1.2rem; align-items: end; }
-.interest-heading h2 { display: flex; gap: 1rem; align-items: center; font-size: clamp(1.8rem, 3vw, 2.4rem); color: var(--text); margin: .6rem 0 0; }
-.interest-number { color: var(--interest-color); font-size: .85rem; font-weight: 400; }
-.interest-source { display: flex; align-items: center; gap: .6rem; color: var(--muted); font-size: .7rem; margin: 0; }
-.source-dot { width: .4rem; height: .4rem; border: 1px solid var(--muted); border-radius: 50%; flex-shrink: 0; }
-.source-dot--current, .source-dot--local { background: var(--interest-color); border-color: var(--interest-color); }
-.source-dot--saved { background: var(--heading); border-color: var(--heading); }
-.interest-sync { display: flex; flex-direction: column; text-align: right; color: var(--muted); font: .7rem/1.7 var(--font-mono); }
-.interest-sync time { color: var(--text-soft); }
-.interest-coverage { color: var(--muted); max-width: 48rem; font-size: .85rem; margin: 1.2rem 0; }
-.interest-period-control { display: flex; gap: .8rem; align-items: center; justify-content: flex-end; margin: 1rem 0; font: .75rem var(--font-mono); color: var(--muted); }
-.interest-period-control select { appearance: auto; background: var(--bg-elevated); border: 1px solid var(--border); border-radius: 3px; color: var(--text); padding: .65rem 1rem; font: .8rem var(--font-mono); min-width: 11rem; cursor: pointer; }
-.interest-period-control select:focus-visible { outline: 2px solid var(--interest-color); outline-offset: 3px; }
-.interest-period-title h3 { font-size: .8rem; color: var(--interest-color); letter-spacing: .05em; text-transform: uppercase; margin: 1rem 0; }
-.interest-stats { display: flex; gap: clamp(2rem, 7vw, 5rem); padding: 1rem 0 2rem; }
-.interest-stats div { display: flex; flex-direction: column; }
-.interest-stats strong { font: 500 clamp(2rem, 5vw, 3.4rem)/1.1 var(--font-mono); letter-spacing: -.05em; color: var(--text); }
-.interest-stats span { color: var(--muted); font-size: .8rem; margin-top: .45rem; }
-.interest-layout--split { display: grid; grid-template-columns: minmax(0, 3fr) minmax(0, 1fr); gap: 2rem; }
-.interest-list-label { font: .7rem var(--font-mono); color: var(--muted); text-transform: uppercase; letter-spacing: .1em; margin: 0 0 1rem; }
-.interest-items { list-style: none; padding: 0; margin: 0; }
-.interest-item { display: grid; grid-template-columns: 1.4rem 3.6rem minmax(0, 1fr) auto; gap: .85rem; align-items: center; padding: .8rem 0; border-top: 1px solid var(--border); }
-.interest-rank { color: var(--muted); font: .7rem var(--font-mono); }
-.interest-art { width: 3.6rem; height: 3.6rem; position: relative; overflow: hidden; background: var(--bg-elevated); border: 1px solid var(--border); border-radius: 2px; }
-.interest-art > span { position: absolute; inset: 0; display: grid; place-items: center; color: var(--interest-color); font: 1.5rem var(--font-mono); opacity: .7; }
-.interest-art img { position: relative; width: 100%; height: 100%; object-fit: cover; }
-.interest-item-copy { min-width: 0; }
-.interest-item-copy h5 { font: 500 1rem/1.4 var(--font-sans); color: var(--text); margin: 0; overflow-wrap: anywhere; }
-.interest-item-copy a { color: inherit; }
-.interest-item-copy a:hover { color: var(--interest-color); }
-.interest-item-copy p, .interest-item-copy time { margin: .2rem 0 0; font-size: .78rem; color: var(--muted); line-height: 1.4; }
-.interest-item-metric { font: .7rem var(--font-mono); color: var(--interest-color); white-space: nowrap; }
-.interest-items--books { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 0 1.8rem; }
-.interest-items--books .interest-art { height: 5rem; }
-.interest-items--games .interest-item { grid-template-columns: 1.4rem 6.7rem minmax(0, 1fr) auto; }
-.interest-items--games .interest-art { width: 6.7rem; height: 3.15rem; }
-.interest-artists { padding: 1rem; background: var(--bg-elevated); align-self: start; border-top: 2px solid var(--interest-color); }
-.interest-artists > div { display: flex; flex-direction: column; border-bottom: 1px solid var(--border); padding: .85rem 0; }
-.interest-artists > div:last-child { border: 0; }
-.interest-artists strong { color: var(--text-soft); font-size: .9rem; font-weight: 500; }
-.interest-artists span { font: .7rem var(--font-mono); color: var(--muted); }
-.interest-chart { margin: 2rem 0; padding: 1.2rem; background: var(--bg-elevated); border: 1px solid var(--border); }
-.interest-chart figcaption { color: var(--muted); font: .7rem var(--font-mono); margin-bottom: 1.4rem; }
-.interest-bars { display: flex; gap: .7rem; overflow-x: auto; }
-.interest-bar-column { flex: 1; min-width: 3rem; max-width: 6rem; text-align: center; }
-.interest-bar-value, .interest-bar-label { color: var(--muted); font: .6rem var(--font-mono); white-space: nowrap; }
-.interest-bar-track { display: flex; height: 5rem; align-items: end; margin: .35rem 0; }
-.interest-bar-track span { display: block; width: 100%; background: var(--interest-color); opacity: .75; border-radius: 2px 2px 0 0; }
-.interest-note { font-size: .75rem; color: var(--muted); margin: 1rem 0 0; }
-.interest-empty { display: flex; align-items: center; gap: 1.5rem; padding: 2.3rem 1.5rem; background: var(--bg-elevated); border: 1px dashed var(--border); }
-.interest-empty-mark { font: 2.5rem var(--font-mono); color: var(--interest-color); opacity: .7; }
-.interest-empty h4 { color: var(--text-soft); font: 500 1rem var(--font-sans); margin: 0 0 .5rem; }
-.interest-empty p { color: var(--muted); font-size: .85rem; margin: 0; }
-.interest-favorites { margin-top: 2rem; padding-top: 1.5rem; border-top: 1px solid var(--border); }
-.interest-favorites h3 { font: .85rem var(--font-mono); color: var(--interest-color); }
-.interest-favorites > div { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 1.5rem; }
-.interest-favorites h4 { font: 500 1rem var(--font-sans); color: var(--text); margin-bottom: .5rem; }
-.interest-favorites p { font-size: .8rem; color: var(--muted); }
-.interests-footnote { color: var(--muted); font-size: .8rem; padding: 2rem 0 0; max-width: 48rem; }
-@media (max-width: 700px) {
-  .interests-jump { grid-template-columns: repeat(2, 1fr); }
-  .interests-jump a:nth-child(3) { border-left: 0; }
-  .interests-jump a:nth-child(n+3) { border-top: 1px solid var(--border); }
-  .interest-heading { align-items: start; }
-  .interest-sync { max-width: 9rem; font-size: .6rem; }
-  .interest-source { font-size: .6rem; }
-  .interest-layout--split, .interest-items--books { grid-template-columns: 1fr; }
-  .interest-item { gap: .55rem; grid-template-columns: 1rem 3.3rem minmax(0, 1fr) auto; }
-  .interest-art { width: 3.3rem; height: 3.3rem; }
-  .interest-item-copy h5 { font-size: .9rem; }
-  .interest-item-metric { font-size: .65rem; }
-  .interest-items--games .interest-item { grid-template-columns: 1rem 4.5rem minmax(0, 1fr) auto; }
-  .interest-items--games .interest-art { width: 4.5rem; height: 2.5rem; }
-  .interest-favorites > div { grid-template-columns: 1fr; gap: .7rem; }
-  .interest-section { padding: 2.5rem 0; }
+.interests-page {
+  --taste-paper: #eee7d8;
+  --taste-dim: #aaa79e;
+  --taste-rule: #353734;
+  --taste-accent: #bcceaa;
+  max-width: 66rem;
+  margin-inline: auto;
+  color: var(--taste-paper);
 }
-
-.interest-preview-banner { padding: .75rem 1rem; background: var(--accent-soft); border: 1px solid var(--accent); color: var(--accent); font: .8rem var(--font-mono); }
+.interests-page [hidden] { display: none !important; }
+.interests-intro { display: flex; align-items: flex-end; justify-content: space-between; gap: 2rem; padding: 2rem 0 3rem; }
+.interests-intro h1 { margin: 0; color: var(--taste-paper); font: 400 clamp(2.8rem, 5.5vw, 4.7rem)/1.02 Georgia, serif; letter-spacing: -.055em; }
+.interests-intro h1 em { font-weight: 400; color: var(--taste-accent); }
+.interests-intro nav { display: flex; flex-wrap: wrap; gap: .6rem 1.2rem; padding-bottom: .25rem; }
+.interests-intro nav a { color: var(--taste-dim); font-size: .86rem; }
+.interests-page a:hover { color: var(--taste-accent); }
+.interests-page :is(a, button, summary):focus-visible { outline: 2px solid var(--taste-accent); outline-offset: 5px; }
+.interest-shelf { border-top: 1px solid var(--taste-rule); padding: 2rem 0 3rem; scroll-margin-top: 7rem; }
+.shelf-heading { display: flex; align-items: center; justify-content: space-between; gap: 1rem; margin-bottom: 1.6rem; }
+.shelf-heading h2 { margin: 0; color: var(--taste-paper); font: 500 clamp(1.55rem, 3vw, 2rem)/1.15 var(--font-sans); letter-spacing: -.045em; }
+.shelf-label { margin: 0; color: var(--taste-dim); font: 400 .82rem/1.4 var(--font-sans); }
+[data-watch-panel] > .shelf-label { margin: -.7rem 0 1.4rem; }
+.watch-switch { display: flex; gap: .2rem; border: 1px solid var(--taste-rule); padding: .25rem; border-radius: 2rem; }
+.watch-switch button { cursor: pointer; border: 0; background: transparent; color: var(--taste-dim); padding: .35rem 1rem; border-radius: 2rem; font: 500 .8rem/1.5 var(--font-sans); }
+.watch-switch button[aria-selected="true"] { color: #172015; background: var(--taste-accent); }
+.watch-enhanced .no-js-category { display: none; }
+.taste-grid { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 2rem 1.8rem; }
+.taste-grid--films, .taste-grid--shows { grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 2rem 1.5rem; }
+.taste-card { min-width: 0; }
+.taste-card-link { display: block; color: inherit; }
+.taste-art { position: relative; overflow: hidden; aspect-ratio: 2 / 3; background: #242726; border-radius: 3px; transition: transform .25s ease, box-shadow .25s ease; }
+.taste-art img { position: absolute; width: 100%; height: 100%; object-fit: cover; }
+.taste-art--empty { background: linear-gradient(155deg, #363d32, #1c2328); }
+.taste-art-fallback { display: flex; height: 100%; align-items: flex-end; padding: 1rem; color: var(--taste-paper); font: 400 clamp(1.1rem, 2.4vw, 2rem)/1.1 Georgia, serif; }
+.taste-caption { padding-top: .85rem; }
+.taste-caption h4 { margin: 0; color: inherit; font: 500 1rem/1.35 var(--font-sans); letter-spacing: -.02em; }
+.taste-caption p, .taste-note { margin: .35rem 0 0; color: var(--taste-dim); font-size: .78rem; line-height: 1.5; }
+.taste-grid--music .taste-art { aspect-ratio: 1; }
+.taste-grid--music .taste-caption h4 { font-size: 1.2rem; }
+.taste-grid--games .taste-art { aspect-ratio: 460 / 215; }
+.taste-grid--books .taste-art { width: 70%; margin-inline: auto; border-radius: 1px 4px 4px 1px; box-shadow: 3px 3px 0 #b5ac9338, 6px 6px 0 #0b0c0c; }
+.taste-grid--books .taste-caption { width: 85%; margin-inline: auto; text-align: center; }
+.taste-expand { margin-top: 1.5rem; }
+.taste-expand summary { display: flex; align-items: center; justify-content: space-between; gap: 1rem; padding: .7rem 0; border-bottom: 1px solid var(--taste-rule); cursor: pointer; list-style: none; font-size: .83rem; }
+.taste-expand summary::-webkit-details-marker { display: none; }
+.taste-expand summary > span { font-size: 1.5rem; line-height: 1; transition: transform .2s ease; }
+.taste-expand[open] summary > span { transform: rotate(45deg); }
+.taste-grid--more { padding-top: 1.5rem; }
+.taste-lately { display: grid; grid-template-columns: 6rem 1fr; gap: 1.4rem; margin-top: 2rem; padding-top: 1.5rem; border-top: 1px solid var(--taste-rule); }
+.taste-lately h3 { margin: 0; color: var(--taste-dim); font: 400 .8rem/1.5 var(--font-sans); }
+.taste-lately h3 span { padding-left: .3rem; color: var(--taste-accent); }
+.taste-recent-grid { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 1.5rem; }
+.taste-card--small .taste-card-link { display: grid; grid-template-columns: 3.1rem 1fr; align-items: center; gap: .8rem; }
+.taste-card--small .taste-caption { padding: 0; }
+.taste-card--small .taste-caption h4 { font-size: .82rem; }
+.taste-card--small .taste-caption p { font-size: .73rem; }
+.taste-card--small .taste-art-fallback { padding: .3rem; font-size: .7rem; }
+.taste-recent-grid--music .taste-art { aspect-ratio: 1; }
+.taste-recent-grid--games .taste-art { aspect-ratio: 460 / 215; }
+@media (hover: hover) and (prefers-reduced-motion: no-preference) {
+  a.taste-card-link:hover .taste-art { transform: translateY(-4px); box-shadow: 0 12px 24px #0005; }
+}
+@media (max-width: 760px) {
+  .interests-intro { display: block; padding: 1rem 0 2rem; }
+  .interests-intro nav { margin-top: 1.5rem; }
+  .interest-shelf { padding: 1.5rem 0 2.3rem; }
+  .taste-grid { gap: 1.5rem 1rem; }
+  .taste-grid--films, .taste-grid--shows { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+  .taste-grid--games { grid-template-columns: 1fr; }
+  .taste-grid--music .taste-caption h4 { font-size: .9rem; }
+  .taste-caption h4 { font-size: .88rem; }
+  .taste-grid--books .taste-art { width: 88%; }
+  .taste-grid--books .taste-caption { width: 100%; }
+  .taste-lately { grid-template-columns: 1fr; gap: 1rem; margin-top: 1.5rem; }
+  .taste-recent-grid { grid-template-columns: 1fr; gap: 1rem; }
+  .taste-card--small .taste-card-link { grid-template-columns: 3.1rem 1fr; }
+}
+@media (max-width: 360px) {
+  .taste-grid--music, .taste-grid--books { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+}
+@media (prefers-reduced-motion: reduce) {
+  html { scroll-behavior: auto; }
+  .interests-page *, .interests-page *::before, .interests-page *::after { animation: none !important; transition: none !important; }
+}

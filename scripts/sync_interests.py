@@ -13,7 +13,8 @@ from pathlib import Path
 from interests.storage import atomic_json, connect, exclusive_lock, get_meta, save_events, set_meta
 from interests.sources import PROVIDERS, FetchError, import_diary
 from interests.publish import export
-from interests.artwork import cache_posters
+from interests.artwork import cache_posters, migrate_posters, publish_posters, prune_posters, cache_public_art
+from interests.enrichment import enrich, fill_show_art
 
 ROOT = Path(__file__).resolve().parents[1]
 
@@ -79,8 +80,8 @@ def collect(db, source, env, now, max_pages):
         return False
 
 
-def main():
-    parser = argparse.ArgumentParser(description=__doc__)
+def argument_parser():
+    parser = argparse.ArgumentParser(description=__doc__, allow_abbrev=False)
     parser.add_argument("--env-file", type=Path, default=ROOT / ".local/interests.env")
     parser.add_argument("--state-dir", type=Path, default=ROOT / ".local/interests")
     parser.add_argument("--output", type=Path, default=ROOT / "data/interests.json")
@@ -88,15 +89,20 @@ def main():
     parser.add_argument("--offline", action="store_true", help="Rebuild public views from saved history and books only")
     parser.add_argument("--max-pages", type=int, default=20, help="Per-source pagination budget; Last.fm backfill resumes next run")
     parser.add_argument("--letterboxd-diary", type=Path, help="Import an extracted Letterboxd diary.csv before collection")
+    return parser
+
+
+def main():
+    parser = argument_parser()
     args = parser.parse_args()
     if args.max_pages < 1:
-        parser.error("--max-pages must be positive")
+        raise ValueError("--max-pages must be positive")
     config = tomllib.loads((ROOT / "data/interests_config.toml").read_text())
     env = read_env(args.env_file)
     env["INTERESTS_TIMEZONE"] = config.get("timezone", "America/New_York")
     for public_dir in (ROOT / "static", ROOT / "public", ROOT / "data"):
         if args.state_dir.resolve().is_relative_to(public_dir.resolve()):
-            parser.error("Private history must be outside static/, public/, and data/")
+            raise ValueError("Private history must be outside static/, public/, and data/")
     now = int(time.time())
     failed = False
     with exclusive_lock(args.state_dir):
@@ -109,11 +115,11 @@ def main():
             os.chmod(backup_path, 0o600)
             if args.letterboxd_diary:
                 if not env.get("LETTERBOXD_USERNAME"):
-                    parser.error("Set LETTERBOXD_USERNAME before importing a diary to bind it to an account")
+                    raise ValueError("Set LETTERBOXD_USERNAME before importing a diary to bind it to an account")
                 identity = hashlib.sha256(json.dumps({"LETTERBOXD_USERNAME": env["LETTERBOXD_USERNAME"]}, sort_keys=True).encode()).hexdigest()
                 previous = get_meta(db, "letterboxd", {})
                 if previous.get("identity") and previous["identity"] != identity:
-                    parser.error("Letterboxd account changed; use a separate state directory")
+                    raise ValueError("Letterboxd account changed; use a separate state directory")
                 events = import_diary(args.letterboxd_diary, env["INTERESTS_TIMEZONE"])
                 with db:
                     save_events(db, "letterboxd", events)
@@ -124,9 +130,21 @@ def main():
                 for source in PROVIDERS if args.source == "all" else [args.source]:
                     if not collect(db, source, env, now, args.max_pages):
                         failed = True
+                enrich(db, env, args.source)
+            artwork = args.state_dir / "artwork"
+            migrate_posters(ROOT, artwork)
             if not args.offline and args.source in ("all", "tautulli") and not get_meta(db, "tautulli", {}).get("failed", True):
-                cache_posters(db, ROOT, env)
-            atomic_json(args.output, export(db, ROOT, config, now))
+                cache_posters(db, artwork, env)
+            if not args.offline and args.source in ("all", "tautulli_tv") and not get_meta(db, "tautulli_tv", {}).get("failed", True):
+                cache_posters(db, artwork, env, budget=24, source="tautulli_tv")
+            view = export(db, ROOT, config, now, artwork_dir=artwork)
+            # The detailed history projections remain internal; visitors receive selections only.
+            view.pop("sections")
+            fill_show_art(db, view, online=not args.offline)
+            cache_public_art(view, artwork, online=not args.offline)
+            publish_posters(view, ROOT, artwork)
+            atomic_json(args.output, view)
+            prune_posters(view, ROOT)
         finally:
             db.close()
     print("Public snapshot ready; account identifiers and raw history remain private.")

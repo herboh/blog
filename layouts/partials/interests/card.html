@@ -1,0 +1,13 @@
+{{ $item := .item }}
+<article class="taste-card{{ if .small }} taste-card--small{{ end }}">
+  {{ with $item.url }}<a class="taste-card-link" href="{{ . }}">{{ else }}<div class="taste-card-link">{{ end }}
+    <div class="taste-art{{ if not $item.image }} taste-art--empty{{ end }}">
+      {{ with $item.image }}<img src="{{ . }}" alt="" loading="lazy" decoding="async" width="600" height="900">{{ else }}<span class="taste-art-fallback" aria-hidden="true">{{ $item.title }}</span>{{ end }}
+    </div>
+    <div class="taste-caption">
+      <h4>{{ $item.title }}</h4>
+      {{ with $item.subtitle }}<p>{{ . }}</p>{{ end }}
+    </div>
+  {{ if $item.url }}</a>{{ else }}</div>{{ end }}
+  {{ with $item.note }}<p class="taste-note">{{ . }}</p>{{ end }}
+</article>

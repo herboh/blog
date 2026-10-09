@@ -9,7 +9,6 @@ enableRobotsTXT = true
 authorName = "Chandler Fulmer"
 description = "Software, Linux, books, and side projects."
 tagline = "Software, Linux, books, and side projects."
-homeStatus = "Static, fast, and under active maintenance again."
 aboutMe = "I'm Chandler, this is a collection of projects, writing, reading, and software. I wanted a place to publish niche tech issues I ran into, or opinions on the state of the world, just in case it was interesting to any passerby on the web."
 github = "herboh"
 
@@ -18,10 +17,6 @@ github = "herboh"
 name = "Blog"
 url = "/blog/"
 weight = 1
-[[menu.main]]
-name = "CV"
-url = "/cv/"
-weight = 2
 [[menu.main]]
 name = "Books"
 url = "/books/"

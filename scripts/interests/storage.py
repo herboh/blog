@@ -68,6 +68,12 @@ def set_meta(db, key, value):
 
 def save_events(db, source, events):
     for event in events:
+        if source == "letterboxd" and (not event.get("image") or not event.get("url")):
+            previous = db.execute("SELECT payload FROM events WHERE source=? AND id=?", (source, event["id"])).fetchone()
+            if previous:
+                saved = json.loads(previous[0])
+                # A diary CSV has no artwork. Re-importing it must not erase RSS enrichment.
+                event = {**event, **{key: event.get(key) or saved.get(key, "") for key in ("image", "url")}}
         db.execute("INSERT OR REPLACE INTO events VALUES (?,?,?,?,?)", (
             source, event["id"], event["occurred"], event["item"], json.dumps(event)))
 

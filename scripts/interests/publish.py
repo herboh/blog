@@ -5,9 +5,10 @@ from datetime import datetime
 from zoneinfo import ZoneInfo
 
 from .storage import get_meta
+from .artwork import poster_name, public_items
 
 
-LABELS = {"lastfm": "Last.fm", "steam": "Steam", "tautulli": "Plex · Tautulli", "letterboxd": "Letterboxd"}
+LABELS = {"lastfm": "Last.fm", "steam": "Steam", "tautulli": "Plex · Tautulli", "tautulli_tv": "Plex · Tautulli", "letterboxd": "Letterboxd"}
 
 
 def stamp(value):
@@ -188,7 +189,8 @@ def book_section(root):
     return section
 
 
-def export(db, root, config, now):
+def export(db, root, config, now, artwork_dir=None):
+    from .profile import build
     tz = ZoneInfo(config.get("timezone", "America/New_York"))
     movies = config.get("movies_source", "auto")
     if movies == "auto":
@@ -208,14 +210,16 @@ def export(db, root, config, now):
                 if url and (parts.scheme != "https" or parts.username or parts.query):
                     raise ValueError("Favorite links must be public HTTPS URLs without credentials or queries")
                 section["favorites"].append({"title": favorite["title"], "note": favorite.get("note", ""), "url": url})
+    view = {"version": 2, "sections": sections, "profile": build(db, sections, config)}
     # Restoring a database without its artwork must still produce a valid site.
     static = (root / "static").resolve()
-    for section in sections:
-        items = [item for period in section["periods"] for item in period["items"]]
-        items.extend(section.get("rated", []))
-        for item in items:
-            if item["image"].startswith("/"):
-                asset = (static / item["image"].lstrip("/")).resolve()
-                if not asset.is_relative_to(static) or not asset.is_file():
-                    item["image"] = ""
-    return {"version": 1, "sections": sections}
+    for item in public_items(view):
+        name = poster_name(item["image"])
+        if name and artwork_dir is not None:
+            if not (artwork_dir / name).is_file():
+                item["image"] = ""
+        elif item["image"].startswith("/"):
+            asset = (static / item["image"].lstrip("/")).resolve()
+            if not asset.is_relative_to(static) or not asset.is_file():
+                item["image"] = ""
+    return view

@@ -14,6 +14,8 @@ from pathlib import Path
 ROOT = Path(__file__).resolve().parents[1]
 sys.path.insert(0, str(ROOT / "scripts"))
 from interests.storage import atomic_json, exclusive_lock
+from interests.artwork import referenced_posters, prune_posters
+from sync_interests import argument_parser
 
 
 def export_source(root, destination):
@@ -26,24 +28,34 @@ def export_source(root, destination):
     shutil.copyfile(snapshot, destination / "data/interests.json")
     # Only image files actually referenced by the public projection, never a private tree.
     view = json.loads(snapshot.read_text())
-    for section in view["sections"]:
-        items = [item for period in section["periods"] for item in period["items"]]
-        items.extend(section.get("rated", []))
-        for item in items:
-            image = item.get("image", "")
-            if not image.startswith("/images/interests/"):
-                continue
-            relative = Path(image.lstrip("/"))
-            source = (root / "static" / relative).resolve()
-            if not source.is_relative_to((root / "static/images/interests").resolve()) or source.suffix != ".jpg":
-                raise ValueError("Invalid generated artwork path")
-            target = destination / "static" / relative
-            target.parent.mkdir(parents=True, exist_ok=True)
-            shutil.copyfile(source, target)
+    public = destination / "static/images/interests"
+    selected = referenced_posters(view)
+    # A poster in an older commit must not survive a later source/selection change.
+    prune_posters(view, destination)
+    for name in selected:
+        source = (root / "static/images/interests" / name).resolve()
+        if not source.is_relative_to((root / "static/images/interests").resolve()):
+            raise ValueError("Invalid generated artwork path")
+        public.mkdir(parents=True, exist_ok=True)
+        shutil.copyfile(source, public / name)
     return revision
 
 
+def prepare_public_permissions(destination):
+    """The release must be readable by a web worker with a different uid/gid."""
+    for entry in destination.rglob("*"):
+        if entry.is_symlink():
+            raise ValueError("Public release must not contain symlinks")
+        entry.chmod(0o755 if entry.is_dir() else 0o644)
+    destination.chmod(0o755)
+
+
 def main():
+    # Validate CLI usage before interpreting the collector's exit 2 as a provider outage.
+    args = argument_parser().parse_args()
+    if args.output.resolve() != (ROOT / "data/interests.json").resolve():
+        print("The release runner uses data/interests.json; use sync_interests.py for a custom --output.", file=sys.stderr)
+        return 1
     os.umask(0o077)
     local = ROOT / ".local"
     local.mkdir(exist_ok=True)
@@ -63,6 +75,7 @@ def main():
                 check = subprocess.run(command, cwd=source)
                 if check.returncode:
                     return check.returncode
+            prepare_public_permissions(destination)
             current, previous = local / "interests-site", local / "interests-site.previous"
             if previous.exists():
                 shutil.rmtree(previous)  # Only this runner's previous generated release.

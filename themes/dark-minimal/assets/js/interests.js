@@ -1,41 +1,54 @@
-// All content is rendered by Hugo; this only switches between saved views.
 (() => {
-  const preferences = new URLSearchParams(window.location.search);
-  document.querySelectorAll('[data-interest-section]').forEach(section => {
-    const select = section.querySelector('[data-period-select]');
-    const periods = [...section.querySelectorAll('[data-period]')];
-    if (!select || !periods.length) return;
-    const requested = preferences.get(section.id);
-    if (periods.some(panel => panel.dataset.period === requested)) select.value = requested;
-    const show = () => {
-      periods.forEach(panel => { panel.hidden = panel.dataset.period !== select.value; });
-    };
-    section.querySelector('.interest-period-control').hidden = false;
-    show();
-    select.addEventListener('change', () => {
-      show();
-      const url = new URL(window.location.href);
-      url.searchParams.set(section.id, select.value);
-      window.history.replaceState(null, '', url);
+  const watching = document.querySelector('[data-watch-section]');
+  const reducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)');
+  const reveal = (container) => {
+    if (reducedMotion.matches) return;
+    container.querySelectorAll('.taste-grid > .taste-card').forEach((card, i) => {
+      card.animate([{ opacity: 0, transform: 'translateY(8px)' }, { opacity: 1, transform: 'translateY(0)' }], {
+        duration: 240, delay: Math.min(i * 35, 210), easing: 'ease-out', fill: 'backwards',
+      });
     });
-  });
-  document.querySelectorAll('[data-sync-time]').forEach(element => {
-    const date = new Date(element.dateTime);
-    if (Number.isNaN(date.getTime())) return;
-    const age = Date.now() - date.getTime();
-    element.title = date.toLocaleString();
-    // Keep the calendar date visible; don't imply a live connection.
-    element.textContent = date.toLocaleDateString(undefined, { month: 'short', day: 'numeric', year: 'numeric' });
-    if (age > 3 * 86400000) {
-      const label = element.previousElementSibling;
-      if (label) label.textContent = 'Showing saved history';
-      const dot = element.closest('[data-interest-section]').querySelector('.source-dot');
-      if (dot) { dot.classList.remove('source-dot--current'); dot.classList.add('source-dot--saved'); }
+  };
+  if (watching) {
+    const tabs = [...watching.querySelectorAll('[data-watch-tab]')];
+    const panels = [...watching.querySelectorAll('[data-watch-panel]')];
+    const activate = (tab, animate = true) => {
+      tabs.forEach((item) => {
+        const active = item === tab;
+        item.setAttribute('aria-selected', String(active));
+        item.tabIndex = active ? 0 : -1;
+      });
+      panels.forEach((panel) => {
+        panel.hidden = panel.dataset.watchPanel !== tab.dataset.watchTab;
+        if (!panel.hidden && animate) reveal(panel);
+      });
+    };
+    if (tabs.length && panels.length) {
+      panels.forEach((panel) => {
+        panel.setAttribute('role', 'tabpanel');
+        panel.setAttribute('aria-labelledby', `tab-${panel.dataset.watchPanel}`);
+        panel.tabIndex = 0;
+      });
+      tabs.forEach((tab, index) => {
+        tab.addEventListener('click', () => activate(tab));
+        tab.addEventListener('keydown', (event) => {
+          let next;
+          if (event.key === 'ArrowRight') next = (index + 1) % tabs.length;
+          else if (event.key === 'ArrowLeft') next = (index + tabs.length - 1) % tabs.length;
+          else if (event.key === 'Home') next = 0;
+          else if (event.key === 'End') next = tabs.length - 1;
+          else return;
+          event.preventDefault();
+          activate(tabs[next]);
+          tabs[next].focus();
+        });
+      });
+      activate(tabs[0], false);
+      watching.classList.add('watch-enhanced');
+      watching.querySelector('.watch-switch').hidden = false;
     }
-  });
-  document.querySelectorAll('.interest-art img').forEach(image => {
-    const unavailable = () => { image.hidden = true; image.parentElement.classList.add('interest-art--empty'); };
-    image.addEventListener('error', unavailable);
-    if (image.complete && !image.naturalWidth) unavailable();
+  }
+  document.querySelectorAll('.taste-expand').forEach((details) => {
+    details.addEventListener('toggle', () => { if (details.open) reveal(details); });
   });
 })();
