@@ -5,17 +5,175 @@
       {
         "key": "films",
         "title": "Films",
-        "label": "Highly rated",
-        "items": [],
-        "recent": [],
+        "label": "Favorites",
+        "items": [
+          {
+            "title": "Megalopolis",
+            "subtitle": "2024",
+            "image": "/images/interests/cd53f331f752e38e8431308442d75648cd6fbe2a390768b8813a3d32567c7c74.jpg",
+            "url": "https://letterboxd.com/film/megalopolis-2024/",
+            "note": ""
+          },
+          {
+            "title": "Titane",
+            "subtitle": "2021",
+            "image": "/images/interests/022c71b0f11e17403760137b7cf8d78187696003a422d76ccd958e3736a9a125.jpg",
+            "url": "https://letterboxd.com/film/titane/",
+            "note": ""
+          },
+          {
+            "title": "Terminator 2: Judgment Day",
+            "subtitle": "1991",
+            "image": "/images/interests/c311119ad2056f93b826e282f84ff372f58474f101bf01dba97f54266c2b6f66.jpg",
+            "url": "https://letterboxd.com/film/terminator-2-judgment-day/",
+            "note": ""
+          },
+          {
+            "title": "Baraka",
+            "subtitle": "1992",
+            "image": "/images/interests/c0f3ba3393f9e5fb474c48ad3d1074a15ece6e2a350648b5eeb7cec42ca67977.jpg",
+            "url": "https://letterboxd.com/film/baraka/",
+            "note": ""
+          }
+        ],
+        "recent": [
+          {
+            "title": "Wuthering Heights",
+            "subtitle": "2026",
+            "image": "/images/interests/0a2c80f4510d8644a29fc5785780be17dde609726e45d613455947e5c4d29858.jpg",
+            "url": "",
+            "note": ""
+          },
+          {
+            "title": "Disclosure Day",
+            "subtitle": "2026",
+            "image": "/images/interests/c091ba6aa21f5a64fd2ace5a90298967541322180c331a2fdfb3da348f394e0e.jpg",
+            "url": "",
+            "note": ""
+          },
+          {
+            "title": "When Harry Met Sally...",
+            "subtitle": "1989",
+            "image": "/images/interests/583eea96362ddd02db783901c032a3e4362ce0db49ce19a49cd707799bef185c.jpg",
+            "url": "",
+            "note": ""
+          }
+        ],
         "more_label": "More films"
       },
       {
         "key": "shows",
         "title": "TV",
         "label": "The regulars",
-        "items": [],
-        "recent": [],
+        "items": [
+          {
+            "title": "House of the Dragon",
+            "subtitle": "",
+            "image": "/images/interests/3cfac907b4d2f25bdfbaeeeabf09a8a695ef4af9b14ec39e5dcc8e34f3aca5b1.jpg",
+            "url": "",
+            "note": ""
+          },
+          {
+            "title": "Silicon Valley",
+            "subtitle": "",
+            "image": "/images/interests/240c46550cfaf52fa4b9634e04f5095307dd3a6b2774c8532dff97ad23ed7b1c.jpg",
+            "url": "",
+            "note": ""
+          },
+          {
+            "title": "Severance",
+            "subtitle": "",
+            "image": "/images/interests/b85dd1573df3b318ae367e130410958414973c68530f86942bc324889428d479.jpg",
+            "url": "https://www.tvmaze.com/shows/44933/severance",
+            "note": ""
+          },
+          {
+            "title": "Mr. Robot",
+            "subtitle": "",
+            "image": "/images/interests/3c92a92a6ab222d6967dee3b60f9ceb3a06e0cf6411e088e2d5b3a3614bf4493.jpg",
+            "url": "https://www.tvmaze.com/shows/1871/mr-robot",
+            "note": ""
+          },
+          {
+            "title": "Game of Thrones",
+            "subtitle": "",
+            "image": "/images/interests/d0ffbb02a6ee340dc0a7ff8e3cd42fd7009278929bfc502039e918f9e59d322a.jpg",
+            "url": "",
+            "note": ""
+          },
+          {
+            "title": "The White Lotus",
+            "subtitle": "",
+            "image": "/images/interests/c81f7314a3f3d5c0fc6ae32265d62a9f60f4abe6723d02d88fbaa3e1f5c63277.jpg",
+            "url": "https://www.tvmaze.com/shows/51394/the-white-lotus",
+            "note": ""
+          },
+          {
+            "title": "Silo",
+            "subtitle": "",
+            "image": "",
+            "url": "",
+            "note": ""
+          },
+          {
+            "title": "The Bear",
+            "subtitle": "",
+            "image": "/images/interests/7831d6864fc4487907f8ca977607ac3784b8d4215a0d709acc2aa0c2f3ecf56c.jpg",
+            "url": "",
+            "note": ""
+          },
+          {
+            "title": "The Last of Us",
+            "subtitle": "",
+            "image": "/images/interests/b0564bf514955ba17329f2f7167552ee47ecb51d4d6b476dad7a9e96022bdf1c.jpg",
+            "url": "",
+            "note": ""
+          },
+          {
+            "title": "Arrested Development",
+            "subtitle": "",
+            "image": "/images/interests/3d4cb370a358141a2096f5c0a0d6c83297369844820600c4148161caf577bbd6.jpg",
+            "url": "https://www.tvmaze.com/shows/321/arrested-development",
+            "note": ""
+          },
+          {
+            "title": "Black Bird",
+            "subtitle": "",
+            "image": "/images/interests/e29a6dee27fecdf1887d33a1e2add70e852bed83d8e18be59b8418d7f26df312.jpg",
+            "url": "https://www.tvmaze.com/shows/53147/black-bird",
+            "note": ""
+          },
+          {
+            "title": "Star Trek: The Next Generation",
+            "subtitle": "",
+            "image": "/images/interests/67e65932c8e70db5693c19baac7f0a78cb6ef03d2365b7e02565bbc3a9d673d1.jpg",
+            "url": "",
+            "note": ""
+          }
+        ],
+        "recent": [
+          {
+            "title": "Game of Thrones",
+            "subtitle": "",
+            "image": "/images/interests/d0ffbb02a6ee340dc0a7ff8e3cd42fd7009278929bfc502039e918f9e59d322a.jpg",
+            "url": "",
+            "note": ""
+          },
+          {
+            "title": "The Last of Us",
+            "subtitle": "",
+            "image": "/images/interests/b0564bf514955ba17329f2f7167552ee47ecb51d4d6b476dad7a9e96022bdf1c.jpg",
+            "url": "",
+            "note": ""
+          },
+          {
+            "title": "The Bear",
+            "subtitle": "",
+            "image": "/images/interests/7831d6864fc4487907f8ca977607ac3784b8d4215a0d709acc2aa0c2f3ecf56c.jpg",
+            "url": "",
+            "note": ""
+          }
+        ],
         "more_label": "More shows"
       }
     ],
@@ -24,16 +182,230 @@
         "key": "music",
         "title": "Music",
         "label": "All-time rotation",
-        "items": [],
-        "recent": [],
+        "items": [
+          {
+            "title": "Radiohead",
+            "subtitle": "In Rainbows",
+            "image": "/images/interests/eb31961b98b94968a4391728d90a60c9d1b43b82e47cf276006a7bd87087d7bc.jpg",
+            "url": "https://www.last.fm/music/Radiohead",
+            "note": ""
+          },
+          {
+            "title": "The Smashing Pumpkins",
+            "subtitle": "Siamese Dream (Deluxe Edition)",
+            "image": "/images/interests/e9b461da3bdade4af8a33fef312a426f86cabdea3ac980d7013e6ff28ec85c69.png",
+            "url": "https://www.last.fm/music/The%20Smashing%20Pumpkins",
+            "note": ""
+          },
+          {
+            "title": "Wilco",
+            "subtitle": "Sky Blue Sky",
+            "image": "/images/interests/18621048e012a7f692c36ac90e73c39b5204a58bec0d450474c67eb565c82336.jpg",
+            "url": "https://www.last.fm/music/Wilco",
+            "note": ""
+          },
+          {
+            "title": "Daft Punk",
+            "subtitle": "Discovery",
+            "image": "/images/interests/23152e3d325990864df4f63da375178415ce54ead1047f36ed09d6af83086873.jpg",
+            "url": "https://www.last.fm/music/Daft%20Punk",
+            "note": ""
+          },
+          {
+            "title": "The Smiths",
+            "subtitle": "Hatful of Hollow",
+            "image": "/images/interests/4f172fc21ab007185b83173ea0539244bccb33b621505c93dd79fa90c5c357d3.png",
+            "url": "https://www.last.fm/music/The%20Smiths",
+            "note": ""
+          },
+          {
+            "title": "Pinegrove",
+            "subtitle": "Everything So Far",
+            "image": "/images/interests/3873f9a669860251ada4b563176096576b356948a68664187e80b8fe07822e05.jpg",
+            "url": "https://www.last.fm/music/Pinegrove",
+            "note": ""
+          },
+          {
+            "title": "Tame Impala",
+            "subtitle": "Currents",
+            "image": "/images/interests/fbb0de2e6536dd2838a44f19594bacfdf0c7f3fa58795928e115a13fd2f58996.jpg",
+            "url": "https://www.last.fm/music/Tame%20Impala",
+            "note": ""
+          },
+          {
+            "title": "The Strokes",
+            "subtitle": "Is This It",
+            "image": "/images/interests/53672ed7996170bdbadb6b4344d09fbd90b93b1299f5d7d4578a74aa9afd8b64.jpg",
+            "url": "https://www.last.fm/music/The%20Strokes",
+            "note": ""
+          },
+          {
+            "title": "Aphex Twin",
+            "subtitle": "Drukqs",
+            "image": "/images/interests/8db2b890f4dec5cac31da8cb342c495a7332262443f9b6017af1f95c85dc83ae.png",
+            "url": "https://www.last.fm/music/Aphex%20Twin",
+            "note": ""
+          },
+          {
+            "title": "Billy Strings",
+            "subtitle": "Home",
+            "image": "/images/interests/e9e905b7ca5ea97a03cea205a060575d1ca6dff274c003c0044958d90091292c.jpg",
+            "url": "https://www.last.fm/music/Billy%20Strings",
+            "note": ""
+          },
+          {
+            "title": "Elliott Smith",
+            "subtitle": "Either/Or",
+            "image": "/images/interests/a6fd11ae8ae3faed476cbb0d2a1c4c0c865490eeee39dcd8d526baf190ec8557.jpg",
+            "url": "https://www.last.fm/music/Elliott%20Smith",
+            "note": ""
+          },
+          {
+            "title": "Songs: Ohia",
+            "subtitle": "The Lioness",
+            "image": "/images/interests/8fc6284aaebf16721a79a82fd4cfac39c24776f6d1fe4470cbed0b245702ffe1.jpg",
+            "url": "https://www.last.fm/music/Songs%3A%20Ohia",
+            "note": ""
+          }
+        ],
+        "recent": [
+          {
+            "title": "Cameron Winter",
+            "subtitle": "Live at Carnegie Hall",
+            "image": "/images/interests/6a786eeac4f5291ddb97f4ab64b5c44e3960c4ea0a4099cf47ec3f59dc1abfc8.jpg",
+            "url": "https://www.last.fm/music/Cameron%20Winter",
+            "note": ""
+          },
+          {
+            "title": "Radiohead",
+            "subtitle": "Kid A",
+            "image": "/images/interests/312f48882ed1e43a06cdb9d19e44548eb8466dfd5c8aca217e160567f3f1bef4.png",
+            "url": "https://www.last.fm/music/Radiohead",
+            "note": ""
+          },
+          {
+            "title": "Kate Bush",
+            "subtitle": "Hounds of Love",
+            "image": "/images/interests/6770a1f9eef150445e25749a6f0dad08cb81de868c8fc53732173bb48434779c.png",
+            "url": "https://www.last.fm/music/Kate%20Bush",
+            "note": ""
+          }
+        ],
         "more_label": "More artists"
       },
       {
         "key": "games",
         "title": "Games",
         "label": "Most played",
-        "items": [],
-        "recent": [],
+        "items": [
+          {
+            "title": "Counter-Strike 2",
+            "subtitle": "",
+            "image": "/images/interests/cd47c8947aa45d726e73cecbbd900ee0cfc35ef725928f56c4d8dbe886ec94a9.jpg",
+            "url": "https://store.steampowered.com/app/730/",
+            "note": ""
+          },
+          {
+            "title": "Factorio",
+            "subtitle": "",
+            "image": "/images/interests/af8657265bfdb9eafa15a76a3941f6330f3c88d86890e05c4d816e7d9b0cab10.jpg",
+            "url": "https://store.steampowered.com/app/427520/",
+            "note": ""
+          },
+          {
+            "title": "Valheim",
+            "subtitle": "",
+            "image": "/images/interests/632b44b4d8fb88f69660ac972795ac8b7962c89ab213fa4bcc0c7b205f38ec1d.jpg",
+            "url": "https://store.steampowered.com/app/892970/",
+            "note": ""
+          },
+          {
+            "title": "Satisfactory",
+            "subtitle": "",
+            "image": "/images/interests/0eb6200bc042df6c7fc1f107e7e82095a1422aaaf8531795e47c037ba4c473e1.jpg",
+            "url": "https://store.steampowered.com/app/526870/",
+            "note": ""
+          },
+          {
+            "title": "Sid Meier's Civilization VI",
+            "subtitle": "",
+            "image": "/images/interests/8234e5ba253030b84bb66ee571a213ae6ee1356baf0c72fc2dbfdd346a5ea8d8.jpg",
+            "url": "https://store.steampowered.com/app/289070/",
+            "note": ""
+          },
+          {
+            "title": "Farming Simulator 25",
+            "subtitle": "",
+            "image": "/images/interests/5acfb149bf671f555fece1f61b5ec5ac329757f7418811c1bd3afbf890b2c5a4.jpg",
+            "url": "https://store.steampowered.com/app/2300320/",
+            "note": ""
+          },
+          {
+            "title": "Farming Simulator 22",
+            "subtitle": "",
+            "image": "/images/interests/b4bc37b1174139bdc86993c53dea2026957645a3c43e5630130338ac87535828.jpg",
+            "url": "https://store.steampowered.com/app/1248130/",
+            "note": ""
+          },
+          {
+            "title": "Hearts of Iron IV",
+            "subtitle": "",
+            "image": "/images/interests/41e4c04bc8a4e24c6b7320bccc8f1224b4f98c069bfd3ced7b763e991b752cb3.jpg",
+            "url": "https://store.steampowered.com/app/394360/",
+            "note": ""
+          },
+          {
+            "title": "Sid Meier's Civilization V",
+            "subtitle": "",
+            "image": "/images/interests/f23efccf0184ffae439b314638a7bf1b7cf8103462f1cf46c256b1823d74c34d.jpg",
+            "url": "https://store.steampowered.com/app/8930/",
+            "note": ""
+          },
+          {
+            "title": "Europa Universalis V",
+            "subtitle": "",
+            "image": "",
+            "url": "https://store.steampowered.com/app/3450310/",
+            "note": ""
+          },
+          {
+            "title": "NBA 2K20",
+            "subtitle": "",
+            "image": "/images/interests/403c3e8ac19d3b1c9c599807d438dffdc5e2215e41c1abe418b3f6371f73a900.jpg",
+            "url": "https://store.steampowered.com/app/1089350/",
+            "note": ""
+          },
+          {
+            "title": "Deadlock",
+            "subtitle": "",
+            "image": "/images/interests/2fe756aae13875f9929733b06adb37a7996fdd5ef6ffe14806c6d4ac4c7517ba.jpg",
+            "url": "https://store.steampowered.com/app/1422450/",
+            "note": ""
+          }
+        ],
+        "recent": [
+          {
+            "title": "Valheim",
+            "subtitle": "",
+            "image": "/images/interests/632b44b4d8fb88f69660ac972795ac8b7962c89ab213fa4bcc0c7b205f38ec1d.jpg",
+            "url": "https://store.steampowered.com/app/892970/",
+            "note": ""
+          },
+          {
+            "title": "WARDOGS",
+            "subtitle": "",
+            "image": "",
+            "url": "https://store.steampowered.com/app/1867240/",
+            "note": ""
+          },
+          {
+            "title": "Factorio",
+            "subtitle": "",
+            "image": "/images/interests/af8657265bfdb9eafa15a76a3941f6330f3c88d86890e05c4d816e7d9b0cab10.jpg",
+            "url": "https://store.steampowered.com/app/427520/",
+            "note": ""
+          }
+        ],
         "more_label": "More games"
       },
       {
