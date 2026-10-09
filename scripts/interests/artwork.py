@@ -1,20 +1,89 @@
 """Optional local movie posters; cover failures never invalidate watch history."""
 import json
 import os
+import re
+import shutil
 import tempfile
 import urllib.request
-from pathlib import Path
 from urllib.parse import urlencode
 
 from .sources import NoRedirect
 from .storage import get_meta, set_meta
 
 
-def cache_posters(db, root, env, budget=12):
+PREFIX = "/images/interests/"
+
+
+def poster_name(image):
+    if image.startswith(PREFIX):
+        name = image.removeprefix(PREFIX)
+        if not re.fullmatch(r"[0-9a-f]{64}\.jpg", name):
+            raise ValueError("Invalid generated poster path")
+        return name
+    return None
+
+
+def referenced_posters(view):
+    names = set()
+    for section in view["sections"]:
+        items = [item for period in section["periods"] for item in period["items"]]
+        items.extend(section.get("rated", []))
+        for item in items:
+            name = poster_name(item.get("image", ""))
+            if name:
+                names.add(name)
+    return names
+
+
+def copy_poster(source, destination, mode):
+    fd, temp = tempfile.mkstemp(dir=destination.parent)
+    try:
+        with os.fdopen(fd, "wb") as outgoing, source.open("rb") as incoming:
+            shutil.copyfileobj(incoming, outgoing)
+            os.fchmod(outgoing.fileno(), mode)
+            outgoing.flush()
+            os.fsync(outgoing.fileno())
+        os.replace(temp, destination)
+    finally:
+        if os.path.exists(temp):
+            os.unlink(temp)
+
+
+def migrate_posters(root, directory):
+    """Preserve posters produced by the first collector before pruning public assets."""
+    public = root / "static/images/interests"
+    for source in public.glob("*.jpg"):
+        if not re.fullmatch(r"[0-9a-f]{64}\.jpg", source.name):
+            continue
+        directory.mkdir(parents=True, exist_ok=True, mode=0o700)
+        destination = directory / source.name
+        if not destination.exists():
+            copy_poster(source, destination, 0o600)
+
+
+def publish_posters(view, root, directory):
+    """Expose only posters in the public projection; the full cache stays private."""
+    public = root / "static/images/interests"
+    selected = referenced_posters(view)
+    for name in selected:
+        public.mkdir(parents=True, exist_ok=True)
+        copy_poster(directory / name, public / name, 0o644)
+
+
+def prune_posters(view, root):
+    """Remove stale generated assets only after the new snapshot was saved."""
+    public = root / "static/images/interests"
+    selected = referenced_posters(view)
+    # These names are owned by the collector. Leave hand-authored assets alone.
+    for old in public.glob("*.jpg"):
+        if re.fullmatch(r"[0-9a-f]{64}\.jpg", old.name) and old.name not in selected:
+            old.unlink()
+
+
+def cache_posters(db, directory, env, budget=12):
     if not all(env.get(k) for k in ("TAUTULLI_URL", "TAUTULLI_API_KEY", "TAUTULLI_USER_ID")):
         return
     covers = get_meta(db, "covers", {})
-    directory = root / "static/images/interests"
     # Newest films first. The cache fills gradually without delaying a large backfill.
     seen = set()
     attempted = 0
@@ -45,7 +114,7 @@ def cache_posters(db, root, env, budget=12):
                 raw = response.read(2_000_001)
             if not raw.startswith(b"\xff\xd8\xff") or len(raw) > 2_000_000:
                 continue
-            directory.mkdir(parents=True, exist_ok=True)
+            directory.mkdir(parents=True, exist_ok=True, mode=0o700)
             fd, temp = tempfile.mkstemp(dir=directory)
             try:
                 with os.fdopen(fd, "wb") as handle:

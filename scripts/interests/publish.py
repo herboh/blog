@@ -5,6 +5,7 @@ from datetime import datetime
 from zoneinfo import ZoneInfo
 
 from .storage import get_meta
+from .artwork import poster_name
 
 
 LABELS = {"lastfm": "Last.fm", "steam": "Steam", "tautulli": "Plex · Tautulli", "letterboxd": "Letterboxd"}
@@ -188,7 +189,7 @@ def book_section(root):
     return section
 
 
-def export(db, root, config, now):
+def export(db, root, config, now, artwork_dir=None):
     tz = ZoneInfo(config.get("timezone", "America/New_York"))
     movies = config.get("movies_source", "auto")
     if movies == "auto":
@@ -214,7 +215,11 @@ def export(db, root, config, now):
         items = [item for period in section["periods"] for item in period["items"]]
         items.extend(section.get("rated", []))
         for item in items:
-            if item["image"].startswith("/"):
+            name = poster_name(item["image"])
+            if name and artwork_dir is not None:
+                if not (artwork_dir / name).is_file():
+                    item["image"] = ""
+            elif item["image"].startswith("/"):
                 asset = (static / item["image"].lstrip("/")).resolve()
                 if not asset.is_relative_to(static) or not asset.is_file():
                     item["image"] = ""

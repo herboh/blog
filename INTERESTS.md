@@ -10,7 +10,8 @@ In the checkout that will run the collector:
 
 ```sh
 mkdir -p .local
-cp scripts/interests.example.env .local/interests.env
+# Create privately, without overwriting an existing credentials file.
+(umask 077; test -e .local/interests.env || cp scripts/interests.example.env .local/interests.env)
 chmod 600 .local/interests.env
 $EDITOR .local/interests.env
 ```
@@ -56,6 +57,11 @@ The deployment review in `SETUP.md` still applies. Untracked/ignored drafts neve
 enter the export. Commit source/template changes before running this release builder;
 ordinary data refreshes do not require a new commit. A private manifest records the
 source revision, Hugo version, and public data hash.
+Only the generated release receives web-readable permissions (files `644`,
+directories `755`); credential and history permissions remain private. Copy the
+release into the web server's existing served directory, not the private `.local/`
+parent. The runner rejects custom `--output` paths; use the collector directly for
+those so a different snapshot cannot silently be substituted during the build.
 
 Useful collector commands:
 
@@ -100,8 +106,13 @@ A user systemd timer can run the same command if persistent missed-run handling 
 - `data/interests.json`: allowlisted public projection for Hugo. Safe to review and
   commit with the site. It contains titles, artwork, work links, aggregates, dates,
   and successful-sync timestamps. No profile links or account identifiers.
-- `static/images/interests/`: public cached Tautulli posters. Up to 12 missing covers
-  are fetched per run; cover failures do not fail movie collection. Music/game
+- `.local/interests/artwork/`: full private Tautulli poster cache. Up to 12 missing
+  covers are fetched per run; cover failures do not fail movie collection.
+- `static/images/interests/`: only posters referenced by the public snapshot.
+  A source/selection change prunes stale generated posters after saving the snapshot.
+  The first upgraded run preserves legacy cached posters in the private state
+  directory before pruning. Release exports also remove posters carried by older
+  commits if the current snapshot no longer references them. Music/game
   artwork uses public CDN URLs with a visual fallback if unavailable.
 
 Each provider is fetched and validated before its database transaction commits.
@@ -161,7 +172,8 @@ python3 scripts/sync_interests.py --letterboxd-diary /private/path/diary.csv
 
 Set `LETTERBOXD_USERNAME` before importing so the archive is bound to the same account as the feed. Keep exports outside `static/` and Git. CSV and RSS share a title/year/watch-date key,
 so repeat imports do not duplicate watches. Multiple watches of the exact same film
-on the same day collapse to one. Highest rated is shown separately when diary ratings
+on the same day collapse to one. Re-importing a CSV preserves artwork and film links
+already collected from RSS while updating ratings. Highest rated is shown separately when diary ratings
 exist. A feed gap longer than the feed window needs another export/import.
 
 **Favorites:** use `[[favorites]]` entries in `data/interests_config.toml`. These are
@@ -169,6 +181,14 @@ editorial picks with optional notes and work links; most played and most watched
 are labeled as measured rankings. No favorites are fabricated from unprovided ratings.
 
 ## Validation
+
+The collected view is a publication candidate, not a privacy approval. By default
+it includes recent film titles and watch dates, listening rankings, and all eligible
+Steam games. The Steam include/exclude lists do not filter films or music. Inspect
+every period in the JSON before committing: hiding a period with JavaScript does
+not remove it from public HTML. Choose the amount of personal history to share
+before enabling scheduled collection/publication. This is an Interests prototype;
+the planned About/Writing/Projects navigation and CV changes remain separate work.
 
 ```sh
 python3 -m unittest discover -s tests -v
@@ -179,8 +199,9 @@ python3 scripts/check_site.py public
 ```
 
 The tests mock provider responses to exercise retention, deduplication, pagination,
-account filtering, time zones, Steam counter corrections, atomic writes and output
-privacy. Successful offline tests do not establish that real credentials or remote
+account filtering, time zones, Steam counter corrections, atomic writes, private
+poster selection, CSV re-imports, release permissions and output privacy.
+Successful offline tests do not establish that real credentials or remote
 services work. Verify a real first collection and inspect `data/interests.json` before
 publishing. API references: [Last.fm](https://www.last.fm/api/show/user.getRecentTracks),
 [Steam](https://partner.steamgames.com/doc/webapi/IPlayerService),
