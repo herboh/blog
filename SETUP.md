@@ -70,7 +70,7 @@ JavaScript/Python syntax, and desktop/mobile browser checks pass. The bookshelf
 contains 22 entries with local covers. The CV remains a placeholder pending the
 next design revision.
 
-## Interests dashboard
+## Interests profile
 
 The static `/interests/` page reads `data/interests.json`. Collection is separate
 from Hugo and keeps normalized history in a private SQLite database. See

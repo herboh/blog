@@ -13,7 +13,8 @@ from pathlib import Path
 from interests.storage import atomic_json, connect, exclusive_lock, get_meta, save_events, set_meta
 from interests.sources import PROVIDERS, FetchError, import_diary
 from interests.publish import export
-from interests.artwork import cache_posters, migrate_posters, publish_posters, prune_posters
+from interests.artwork import cache_posters, migrate_posters, publish_posters, prune_posters, cache_public_art
+from interests.enrichment import enrich, fill_show_art
 
 ROOT = Path(__file__).resolve().parents[1]
 
@@ -129,11 +130,18 @@ def main():
                 for source in PROVIDERS if args.source == "all" else [args.source]:
                     if not collect(db, source, env, now, args.max_pages):
                         failed = True
+                enrich(db, env, args.source)
             artwork = args.state_dir / "artwork"
             migrate_posters(ROOT, artwork)
             if not args.offline and args.source in ("all", "tautulli") and not get_meta(db, "tautulli", {}).get("failed", True):
                 cache_posters(db, artwork, env)
+            if not args.offline and args.source in ("all", "tautulli_tv") and not get_meta(db, "tautulli_tv", {}).get("failed", True):
+                cache_posters(db, artwork, env, budget=24, source="tautulli_tv")
             view = export(db, ROOT, config, now, artwork_dir=artwork)
+            # The detailed history projections remain internal; visitors receive selections only.
+            view.pop("sections")
+            fill_show_art(db, view, online=not args.offline)
+            cache_public_art(view, artwork, online=not args.offline)
             publish_posters(view, ROOT, artwork)
             atomic_json(args.output, view)
             prune_posters(view, ROOT)

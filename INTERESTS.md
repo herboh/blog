@@ -1,7 +1,9 @@
-# Interests dashboard
+# Interests profile
 
 `/interests/` is an entirely static Hugo page. Python collects history separately;
-Hugo never contacts an API. Period selectors only reveal HTML already in the page.
+Hugo never contacts an API. Film/TV tabs, expandable shelves, and small reveal
+animations enhance already-rendered HTML. Without JavaScript both watching shelves
+and native disclosures remain usable. Reduced-motion preferences disable animation.
 The existing books page and data remain the reading source.
 
 ## Credentials
@@ -24,8 +26,8 @@ front matter, commands/URLs in chat, or a public CI log. `.local/` is already ig
 | --- | --- | --- |
 | Music | `LASTFM_API_KEY`, `LASTFM_USERNAME` | [Create a Last.fm API account](https://www.last.fm/api/account/create). No shared secret is needed for reading history. |
 | Games | `STEAM_API_KEY`, `STEAM_ID` | [Steam Web API key](https://steamcommunity.com/dev/apikey); your numeric 64-bit Steam ID. Use your own account's key and test with existing privacy settings first. |
-| Plex movies | `TAUTULLI_URL`, `TAUTULLI_API_KEY`, `TAUTULLI_USER_ID` | Tautulli Settings → Web Interface → API key. Use the Plex numeric user ID (not a username or server ID). The Users page links to the selected user's details; its `user_id` identifies them. |
-| Letterboxd | `LETTERBOXD_USERNAME` | Your username; the public RSS feed needs no API key. |
+| Plex TV / movies | `TAUTULLI_URL`, `TAUTULLI_API_KEY`, `TAUTULLI_USER_ID` | Tautulli Settings → Web Interface → API key. Use the Plex numeric user ID (not a username or server ID). The Users page links to the selected user's details; its `user_id` identifies them. |
+| Letterboxd | `LETTERBOXD_USERNAME` | Your username; the public RSS feed and profile favorites need no API key. |
 
 Use Tautulli's reachable base URL including its HTTP root, if configured. Collection
 should run where that private service is reachable. There is no need to expose it
@@ -49,7 +51,7 @@ python3 scripts/refresh_interests.py
 ```
 
 This collects configured sources, writes `data/interests.json`, exports the current
-Git commit, and overlays only that public snapshot and its cached movie posters. It
+Git commit, and overlays only that public snapshot and its selected cached artwork. It
 builds the export in a temporary directory, runs the site's offline checks, and promotes the validated result to
 `.local/interests-site/`. The previous local release is retained at
 `.local/interests-site.previous/`. It **does not deploy or change production**.
@@ -103,92 +105,93 @@ A user systemd timer can run the same command if persistent missed-run handling 
   each run. This is one recovery checkpoint, not a complete backup policy. Back up
   the state directory to your normal private/off-machine backups. Back up the
   credential file separately and securely.
-- `data/interests.json`: allowlisted public projection for Hugo. Safe to review and
-  commit with the site. It contains titles, artwork, work links, aggregates, dates,
-  and successful-sync timestamps. No profile links or account identifiers.
-- `.local/interests/artwork/`: full private Tautulli poster cache. Up to 12 missing
-  covers are fetched per run; cover failures do not fail movie collection.
-- `static/images/interests/`: only posters referenced by the public snapshot.
-  A source/selection change prunes stale generated posters after saving the snapshot.
-  The first upgraded run preserves legacy cached posters in the private state
-  directory before pruning. Release exports also remove posters carried by older
-  commits if the current snapshot no longer references them. Music/game
-  artwork uses public CDN URLs with a visual fallback if unavailable.
+- `data/interests.json`: version 2 public selections for Hugo: titles, album names,
+  film release years, artwork, work links, and optional editorial notes. It contains
+  no watch dates, play counts, source status, profile links, or account identifiers.
+- `.local/interests/artwork/`: private provider artwork cache. Plex poster requests
+  are bounded (12 films and 24 TV shows per run); public CDN image requests are also
+  bounded. Cover failures do not invalidate history or selections.
+- `static/images/interests/`: only artwork referenced by the current snapshot.
+  Album covers, film/TV posters and game headers are cached locally. Visitors make
+  no provider API or artwork requests. Offline runs reuse the cache; unavailable
+  artwork becomes a typographic fallback. Changing selections prunes generated
+  public files but retains the private originals. Hand-authored assets are untouched.
 
 Each provider is fetched and validated before its database transaction commits.
 Malformed payloads, missing fields, pagination failure, and empty/inaccessible Steam
 libraries never replace successful history. Public JSON is written with atomic
-replacement. Sources fail independently. On a failure the page keeps the previous
-successful timestamp, marks the source as saved, and keeps rolling periods anchored
-to that successful collection. Offline builds do not manufacture fresh sync dates.
+replacement. Sources fail independently. On failure, saved history and selections remain available. Source status and
+successful-sync timestamps stay in private state and command output.
 
 History is retained, including records later removed upstream. Fetches deduplicate
 by stable event identities. Correcting/removing historical records deliberately
 requires an archive edit/import workflow; deletion upstream is not an automatic
 public purge. Unchanged feeds are not evidence of a complete archive.
 
-## Meaning of each view
+## What appears on the page
 
-**Music:** recent means 30 days ending at the last successful sync. Rank tracks and
-artists by recorded scrobbles; do not label play counts as listening minutes. Initial
-backfill saves a bounded batch, then resumes older history on later runs. New listens
-are collected with a seven-day overlap. Counts are labeled **All recorded** and
-coverage says when older history is still being collected. If new activity exceeds
-the page budget, the collector fails without advancing its watermark; increase
-`--max-pages`. Historical corrections outside the overlap require a deliberate rescan.
-
-**Games:** All time is lifetime hours from Steam; Last 2 weeks is Steam's rolling
-window. Yearly views sum positive changes in cumulative hours after the first
-snapshot. New games establish their own baseline. Counter decreases reset the
-baseline without adding spurious hours. Increases are assigned to collection time,
-not invented session times; offline synchronization and missed runs can shift a
-change across a month/year boundary. Coverage labels the tracking start and gaps.
-App IDs excluded in `data/interests_config.toml` are omitted from every measured public list,
-chart and total. Games absent from the newest library also stay out of the export;
-old snapshots remain private. Steam hours are time reported by Steam, not verified
-active attention.
-
-**Books:** the existing `data/books.toml` is authoritative for reading years, order,
-ratings and notes. The current cover sync enriches metadata; it does not synchronize
-a reading-service account. Latest reads follow that file's order, not invented dates.
-
-**Movies:** by default, use Tautulli once it has successfully collected; otherwise use
-Letterboxd. Set `movies_source = "tautulli"` or `"letterboxd"` in the public config
-to pin the source. They are never summed together. Tautulli requires one explicit
-user ID, verifies that every response row matches, excludes non-movies and unfinished
-plays, requires at least 85% completion, and groups resumed playbacks by reference ID using the latest qualifying completion date.
-All recorded means the watch history Tautulli still retains, not all films ever seen.
-Large archives exceeding 2,000 rows need a larger `--max-pages` value (100 rows/page).
-The first version scans retained movie history on each run so updated session records
-can be reconciled without inventing a reliable modified-since cursor.
-
-Letterboxd collects dated diary entries from RSS. Lists and undated reviews are
-ignored. A feed is a recent window, not a historical export. Backfill with an extracted
+**Films:** the four favorites on the Letterboxd profile lead, followed by the three
+most recent distinct dated diary films. If no favorites have ever been saved, rated
+diary films are a fallback labeled “Highly rated.” Favorites come from public profile
+HTML, so bot protection or markup changes can prevent refresh; the last successful
+selection remains. One failed poster request does not discard the selection. The
+profile parser also accepts saved HTML through `favorites_from_html` for recovery.
+The RSS feed is a recent window, not a historical export. Backfill with an extracted
 `diary.csv` from [Letterboxd's export](https://letterboxd.com/settings/data/):
 
 ```sh
 python3 scripts/sync_interests.py --letterboxd-diary /private/path/diary.csv
 ```
 
-Set `LETTERBOXD_USERNAME` before importing so the archive is bound to the same account as the feed. Keep exports outside `static/` and Git. CSV and RSS share a title/year/watch-date key,
-so repeat imports do not duplicate watches. Multiple watches of the exact same film
-on the same day collapse to one. Re-importing a CSV preserves artwork and film links
-already collected from RSS while updating ratings. Highest rated is shown separately when diary ratings
-exist. A feed gap longer than the feed window needs another export/import.
+Set `LETTERBOXD_USERNAME` first to bind the archive to the same account. Keep exports
+outside `static/` and Git. CSV and RSS share a title/year/watch-date identity. Repeat
+imports preserve RSS artwork and work links. Full review text is not yet displayed.
 
-**Favorites:** use `[[favorites]]` entries in `data/interests_config.toml`. These are
-editorial picks with optional notes and work links; most played and most watched
-are labeled as measured rankings. No favorites are fabricated from unprovided ratings.
+**TV:** completed episode plays from Tautulli rank series, with the three most recently
+watched distinct series below. Only the configured numeric user is accepted. At least
+85% completion is required; resumed sessions share a reference ID. This reflects
+retained Tautulli history, not every show ever watched. Larger archives need a larger
+`--max-pages` budget (100 rows/page); `--source tautulli_tv` collects only TV.
+Plex provides posters first. Missing posters use exact, unambiguous title matches from
+[TVmaze](https://www.tvmaze.com/api); those cards link back to the matched TVmaze page
+for attribution. Ambiguous titles keep their fallback until supplied manually.
+
+Add optional picks to `data/interests_config.toml` to place them ahead of the ranking:
+
+```toml
+[[show_picks]]
+title = "A show I love"
+# Existing titles reuse the saved poster. For an untracked title:
+image = "/images/shows/my-show.jpg" # file at static/images/shows/my-show.jpg
+note = "An optional personal line."
+```
+
+**Music:** the first three artists in Last.fm's `user.getTopArtists` overall chart,
+expandable to twelve, with three most recently played distinct artists underneath.
+Overall ranking comes directly from the account chart, independently of partial
+scrobble backfill. Album covers represent actual albums and are labeled accordingly;
+generic artist placeholder images are rejected. The chart does not imply personally
+curated favorites. No additional API key is needed for artwork.
+
+**Games:** the first three games by Steam lifetime playtime, expandable to twelve,
+and the top three in Steam's rolling two-week window. Hours are used for sorting
+but not displayed. `exclude_steam_apps = [123, 456]` removes those app IDs from both
+selections. `include_steam_apps` can instead define a public allowlist. An app's store
+link contains its ID. Games absent from the newest library also stay out; historic
+snapshots remain private. The collector still stores lifetime snapshots for future
+analysis without inventing older play sessions.
+
+**Books:** the existing `data/books.toml` supplies reading order, authors and notes;
+its first three entries lead, with the rest expandable. Recent reads follow that
+file's order. They are labeled as a bookshelf, not invented personal favorites.
+The current cover sync enriches metadata; it does not synchronize a reading account.
 
 ## Validation
 
-The collected view is a publication candidate, not a privacy approval. By default
-it includes recent film titles and watch dates, listening rankings, and all eligible
-Steam games. The Steam include/exclude lists do not filter films or music. Inspect
-every period in the JSON before committing: hiding a period with JavaScript does
-not remove it from public HTML. Choose the amount of personal history to share
-before enabling scheduled collection/publication. This is an Interests prototype;
-the planned About/Writing/Projects navigation and CV changes remain separate work.
+Review `data/interests.json` and all expanded selections before publication:
+collapsed content is still public HTML. Steam exclusions do not filter films or
+music. Keep actual preview snapshots in an ignored private export until ready to
+publish. The planned About/Writing/Projects navigation and CV changes remain separate.
 
 ```sh
 python3 -m unittest discover -s tests -v

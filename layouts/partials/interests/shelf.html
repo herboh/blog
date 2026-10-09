@@ -1,0 +1,23 @@
+{{ $shelf := .shelf }}
+{{ $count := .count }}
+{{ with $shelf.items }}
+<div class="taste-grid taste-grid--{{ $shelf.key }}">
+  {{ range first $count . }}{{ partial "interests/card.html" (dict "item" .) }}{{ end }}
+</div>
+{{ if gt (len .) $count }}
+<details class="taste-expand">
+  <summary>{{ $shelf.more_label }}<span aria-hidden="true">+</span></summary>
+  <div class="taste-grid taste-grid--{{ $shelf.key }} taste-grid--more">
+    {{ range after $count . }}{{ partial "interests/card.html" (dict "item" .) }}{{ end }}
+  </div>
+</details>
+{{ end }}
+{{ end }}
+{{ with $shelf.recent }}
+<aside class="taste-lately">
+  <h3>{{ if eq $shelf.key "books" }}Recent reads{{ else }}Lately{{ end }} <span aria-hidden="true">↗</span></h3>
+  <div class="taste-recent-grid taste-recent-grid--{{ $shelf.key }}">
+    {{ range . }}{{ partial "interests/card.html" (dict "item" . "small" true) }}{{ end }}
+  </div>
+</aside>
+{{ end }}

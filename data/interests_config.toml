@@ -1,15 +1,14 @@
 # Public presentation settings. Credentials and account identifiers do not belong here.
 timezone = "America/New_York"
-# auto selects Tautulli when it has data, otherwise Letterboxd. Never adds both totals.
-movies_source = "auto"
+# Films on the profile always come from Letterboxd; TV comes from Tautulli.
+movies_source = "letterboxd"
 # Optional Steam app IDs to omit from ALL exported views and totals.
 exclude_steam_apps = []
 # Only publish these Steam app IDs when nonempty; empty publishes all returned games.
 include_steam_apps = []
-# Named favorites are editorial, distinct from most-played / highest-rated rankings.
-# Example:
-# [[favorites]]
-# kind = "games" # music, games, books, or movies
-# title = "A favorite game"
-# note = "Why I keep coming back."
-# url = "https://store.steampowered.com/app/123/"
+# Optional TV picks appear before the most-played shows. Existing titles reuse
+# their cached poster; for an untracked show, put a poster in static/images/shows/.
+# [[show_picks]]
+# title = "A show I love"
+# image = "/images/shows/my-show.jpg"
+# note = "An optional personal line."

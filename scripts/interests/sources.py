@@ -23,7 +23,7 @@ class NoRedirect(urllib.request.HTTPRedirectHandler):
         return None
 
 
-def fetch(url, params=None, headers=None, xml=False):
+def fetch(url, params=None, headers=None, xml=False, html=False):
     if params:
         url += ("&" if "?" in url else "?") + urllib.parse.urlencode(params)
     request = urllib.request.Request(url, headers={"User-Agent": "chanfulmer-interests/1.0", **(headers or {})})
@@ -34,7 +34,7 @@ def fetch(url, params=None, headers=None, xml=False):
                 raw = response.read(16_000_001)
             if len(raw) > 16_000_000:
                 raise FetchError("Response exceeded size limit")
-            return ET.fromstring(raw) if xml else json.loads(raw)
+            return raw.decode("utf-8") if html else ET.fromstring(raw) if xml else json.loads(raw)
         except urllib.error.HTTPError as exc:
             if exc.code not in (429, 500, 502, 503, 504) or attempt == 2:
                 raise FetchError(f"HTTP {exc.code}; previous data retained") from None
@@ -63,7 +63,7 @@ def positive_int(value):
 def image_url(value):
     url = urllib.parse.urlsplit(value or "")
     # Public album art only. Never export provider/account URLs arbitrarily.
-    if url.scheme == "https" and url.hostname in ("lastfm.freetls.fastly.net", "lastfm-img2.akamaized.net"):
+    if url.scheme == "https" and not url.username and url.hostname in ("lastfm-img.freetls.fastly.net", "lastfm.freetls.fastly.net", "lastfm-img2.akamaized.net") and "2a96cbd8b46e442fc41c2b86b821562f" not in url.path:
         return value
     return ""
 
@@ -142,7 +142,7 @@ def steam(env, previous, now, max_pages):
     return normalized, {"first_observed": previous.get("first_observed", now)}
 
 
-def tautulli(env, previous, now, max_pages):
+def tautulli(env, previous, now, max_pages, media_type="movie"):
     base = urllib.parse.urlsplit(env["TAUTULLI_URL"].rstrip("/"))
     if base.scheme not in ("http", "https") or not base.hostname or base.username or base.query or base.fragment:
         raise FetchError("TAUTULLI_URL must be a base HTTP(S) URL without credentials or query")
@@ -150,7 +150,7 @@ def tautulli(env, previous, now, max_pages):
     events = {}
     # Full scan is bounded and transactional; retained history is never deleted.
     for page in range(max_pages):
-        params = dict(cmd="get_history", user_id=user_id, media_type="movie", grouping=0,
+        params = dict(cmd="get_history", user_id=user_id, media_type=media_type, grouping=0,
             include_activity=0, order_column="date", order_dir="desc", start=page * 100, length=100)
         headers = {}
         if env.get("TAUTULLI_AUTH", "header") == "query":
@@ -165,7 +165,7 @@ def tautulli(env, previous, now, max_pages):
         rows = require_list(data["data"])
         for row in rows:
             # Check the server applied the filter before accepting any history.
-            if str(row["user_id"]) != user_id or row["media_type"] != "movie":
+            if str(row["user_id"]) != user_id or row["media_type"] != media_type:
                 raise FetchError("Tautulli returned another user's history or media type")
             if positive_int(row["stopped"]) == 0 or float(row.get("percent_complete", 0)) < 85:
                 continue
@@ -174,10 +174,12 @@ def tautulli(env, previous, now, max_pages):
                 continue
             # Collapse split/resumed playback records by reference_id when available.
             event_id = str(row.get("reference_id") or row["row_id"])
+            show = media_type == "episode"
+            title = row["grandparent_title"] if show else row["title"]
             event = dict(id=event_id, occurred=occurred,
-                item=stable_id(row["title"], str(row.get("year", ""))), title=row["title"],
-                creator=str(row.get("year", "")), image="", url="", rating=None,
-                poster_key=str(row.get("rating_key", "")))
+                item=stable_id("show", title) if show else stable_id(title, str(row.get("year", ""))), title=title,
+                creator="TV series" if show else str(row.get("year", "")), image="", url="", rating=None,
+                poster_key=str(row.get("grandparent_rating_key" if show else "rating_key", "")))
             if event_id not in events or occurred > events[event_id]["occurred"]:
                 events[event_id] = event
         total = positive_int(data["recordsFiltered"])
@@ -187,6 +189,10 @@ def tautulli(env, previous, now, max_pages):
             raise FetchError("Tautulli pagination ended unexpectedly")
         time.sleep(0.15)
     raise FetchError("Tautulli history exceeds page budget; increase --max-pages")
+
+
+def tautulli_tv(env, previous, now, max_pages):
+    return tautulli(env, previous, now, max_pages, media_type="episode")
 
 
 LB = {"lb": "https://letterboxd.com", "tmdb": "https://themoviedb.org"}
@@ -269,5 +275,6 @@ PROVIDERS = {
     "lastfm": (lastfm, ("LASTFM_API_KEY", "LASTFM_USERNAME")),
     "steam": (steam, ("STEAM_API_KEY", "STEAM_ID")),
     "tautulli": (tautulli, ("TAUTULLI_URL", "TAUTULLI_API_KEY", "TAUTULLI_USER_ID")),
+    "tautulli_tv": (tautulli_tv, ("TAUTULLI_URL", "TAUTULLI_API_KEY", "TAUTULLI_USER_ID")),
     "letterboxd": (letterboxd, ("LETTERBOXD_USERNAME",)),
 }

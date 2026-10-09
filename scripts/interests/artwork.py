@@ -5,10 +5,10 @@ import re
 import shutil
 import tempfile
 import urllib.request
-from urllib.parse import urlencode
+from urllib.parse import urlencode, urlsplit
 
 from .sources import NoRedirect
-from .storage import get_meta, set_meta
+from .storage import get_meta, set_meta, stable_id
 
 
 PREFIX = "/images/interests/"
@@ -17,22 +17,25 @@ PREFIX = "/images/interests/"
 def poster_name(image):
     if image.startswith(PREFIX):
         name = image.removeprefix(PREFIX)
-        if not re.fullmatch(r"[0-9a-f]{64}\.jpg", name):
+        if not re.fullmatch(r"[0-9a-f]{64}\.(jpg|png|webp)", name):
             raise ValueError("Invalid generated poster path")
         return name
     return None
 
 
+def public_items(view):
+    profile = view.get("profile", {})
+    for shelf in [*profile.get("watching", []), *profile.get("shelves", [])]:
+        yield from shelf["items"]
+        yield from shelf["recent"]
+    for section in view.get("sections", []):
+        for period in section["periods"]:
+            yield from period["items"]
+        yield from section.get("rated", [])
+
+
 def referenced_posters(view):
-    names = set()
-    for section in view["sections"]:
-        items = [item for period in section["periods"] for item in period["items"]]
-        items.extend(section.get("rated", []))
-        for item in items:
-            name = poster_name(item.get("image", ""))
-            if name:
-                names.add(name)
-    return names
+    return {name for item in public_items(view) if (name := poster_name(item.get("image", "")))}
 
 
 def copy_poster(source, destination, mode):
@@ -52,8 +55,8 @@ def copy_poster(source, destination, mode):
 def migrate_posters(root, directory):
     """Preserve posters produced by the first collector before pruning public assets."""
     public = root / "static/images/interests"
-    for source in public.glob("*.jpg"):
-        if not re.fullmatch(r"[0-9a-f]{64}\.jpg", source.name):
+    for source in public.glob("*.*"):
+        if not re.fullmatch(r"[0-9a-f]{64}\.(jpg|png|webp)", source.name):
             continue
         directory.mkdir(parents=True, exist_ok=True, mode=0o700)
         destination = directory / source.name
@@ -75,22 +78,26 @@ def prune_posters(view, root):
     public = root / "static/images/interests"
     selected = referenced_posters(view)
     # These names are owned by the collector. Leave hand-authored assets alone.
-    for old in public.glob("*.jpg"):
-        if re.fullmatch(r"[0-9a-f]{64}\.jpg", old.name) and old.name not in selected:
+    for old in public.glob("*.*"):
+        if re.fullmatch(r"[0-9a-f]{64}\.(jpg|png|webp)", old.name) and old.name not in selected:
             old.unlink()
 
 
-def cache_posters(db, directory, env, budget=12):
+def cache_posters(db, directory, env, budget=12, source="tautulli"):
     if not all(env.get(k) for k in ("TAUTULLI_URL", "TAUTULLI_API_KEY", "TAUTULLI_USER_ID")):
         return
     covers = get_meta(db, "covers", {})
-    # Newest films first. The cache fills gradually without delaying a large backfill.
+    # Cover the visible selections first, then gradually fill the private cache.
     seen = set()
     attempted = 0
-    for record in db.execute("SELECT payload FROM events WHERE source='tautulli' ORDER BY occurred DESC"):
-        event = json.loads(record[0])
+    events = [json.loads(r[0]) for r in db.execute("SELECT payload FROM events WHERE source=? ORDER BY occurred DESC", (source,))]
+    if source == "tautulli_tv":
+        from collections import Counter
+        counts = Counter(e["item"] for e in events)
+        events = events[:3] + sorted(events, key=lambda e: -counts[e["item"]])
+    for event in events:
         item = event["item"]
-        key = "tautulli:" + item
+        key = source + ":" + item
         if item in seen or not event.get("poster_key"):
             continue
         seen.add(item)
@@ -128,3 +135,47 @@ def cache_posters(db, directory, env, budget=12):
             continue  # A poster outage must not become a data outage.
     with db:
         set_meta(db, "covers", covers)
+
+
+def cache_public_art(view, directory, online=True, budget=60):
+    """Only credential-free provider CDNs; no image request is made by the visitor."""
+    hosts = {"lastfm-img.freetls.fastly.net", "lastfm.freetls.fastly.net", "lastfm-img2.akamaized.net",
+             "a.ltrbxd.com", "resizing.flixster.com", "shared.fastly.steamstatic.com", "static.tvmaze.com"}
+    remaining = budget
+    unavailable = set()
+    for item in public_items(view):
+        value = item.get("image", "")
+        parts = urlsplit(value)
+        if parts.scheme != "https" or parts.hostname not in hosts or parts.username:
+            continue
+        key = stable_id(value)
+        saved = next((p for ext in ("jpg", "png", "webp") if (p := directory / (key + "." + ext)).is_file()), None)
+        if saved:
+            item["image"] = PREFIX + saved.name
+            continue
+        if not online or remaining <= 0 or value in unavailable:
+            # Omit unavailable remote art instead of making the public site depend on it.
+            item["image"] = ""
+            continue
+        remaining -= 1
+        unavailable.add(value)
+        try:
+            request = urllib.request.Request(value, headers={"User-Agent": "chanfulmer-interests/1.0"})
+            with urllib.request.build_opener(NoRedirect).open(request, timeout=10) as response:
+                raw = response.read(3_000_001)
+            ext = "jpg" if raw.startswith(b"\xff\xd8\xff") else "png" if raw.startswith(b"\x89PNG\r\n\x1a\n") else "webp" if raw[:4] == b"RIFF" and raw[8:12] == b"WEBP" else None
+            if not ext or len(raw) > 3_000_000:
+                raise ValueError("Unsupported image")
+            directory.mkdir(parents=True, exist_ok=True, mode=0o700)
+            fd, temp = tempfile.mkstemp(dir=directory)
+            try:
+                with os.fdopen(fd, "wb") as handle:
+                    handle.write(raw)
+                saved = directory / (key + "." + ext)
+                os.replace(temp, saved)
+            finally:
+                if os.path.exists(temp):
+                    os.unlink(temp)
+            item["image"] = PREFIX + saved.name
+        except (OSError, ValueError):
+            item["image"] = ""
